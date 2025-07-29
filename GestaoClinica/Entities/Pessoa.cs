@@ -1,6 +1,17 @@
 ﻿namespace GestaoClinica.Entities
 {
-    public class Pessoa
+    public abstract class Pessoa
     {
+        public int IdPessoa { get; set; }
+        public string Nome { get; set; }
+        public string Telefone { get; set; }
+        public string Email { get; set; }
+        public string Cpf { get; set; }
+        public string DataNascimento { get; set; }
+        public DateTime DataCriacao { get; set; } = DateTime.UtcNow;
+        public DataTime UltimaAtualizacao { get; set; }
+        
+        public int EnderecoId { get; set; }
+        public Endereco Endereco { get; set; }
     }
 }
