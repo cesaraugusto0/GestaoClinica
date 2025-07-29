@@ -1,22 +1,21 @@
 ﻿namespace GestaoClinica.Entities
 {
-    public class Cliente:Pessoa
+    public class StatusAgenda
     {
-        public int IdCliente { get; set; }
-        public string Observacoes { get; set; }
-        public bool Ativo { get; set; }
+        public int IdStatusAgenda { get; set; }
+        public string NomeStatus { get; set; }
         public DateTime DataCriacao { get; set; } = DateTime.UtcNow;
         public DataTime UltimaAtualizacao { get; set; }
 
         public ICollection<Agendamento> Agendamentos { get; set; } = new List<Agendamento>();
 
-        public Cliente()
+        public StatusAgenda()
         {
         }
 
-        public Cliente(int idCliente)
+        public StatusAgenda(int idStatusAgenda)
         {
-            IdCliente = idCliente;
+            IdStatusAgenda = idStatusAgenda;
         }
     }
 }
