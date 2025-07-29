@@ -5,7 +5,7 @@
         public int IdStatusAgenda { get; set; }
         public string NomeStatus { get; set; }
         public DateTime DataCriacao { get; set; } = DateTime.UtcNow;
-        public DataTime UltimaAtualizacao { get; set; }
+        public DateTime UltimaAtualizacao { get; set; }
 
         public ICollection<Agendamento> Agendamentos { get; set; } = new List<Agendamento>();
 

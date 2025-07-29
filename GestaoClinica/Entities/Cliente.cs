@@ -6,7 +6,7 @@
         public string Observacoes { get; set; }
         public bool Ativo { get; set; }
         public DateTime DataCriacao { get; set; } = DateTime.UtcNow;
-        public DataTime UltimaAtualizacao { get; set; }
+        public DateTime UltimaAtualizacao { get; set; }
 
         public ICollection<Agendamento> Agendamentos { get; set; } = new List<Agendamento>();
 

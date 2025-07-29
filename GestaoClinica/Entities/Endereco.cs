@@ -10,7 +10,7 @@
         public string Uf { get; set; }
         public string Cep { get; set; }
         public DateTime DataCriacao { get; set; } = DateTime.UtcNow;
-        public DataTime UltimaAtualizacao { get; set; }
+        public DateTime UltimaAtualizacao { get; set; }
 
         public ICollection<Pessoa> Pessoas { get; set; } = new List<Pessoa>();
 

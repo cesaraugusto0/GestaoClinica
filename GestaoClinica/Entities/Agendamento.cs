@@ -7,7 +7,7 @@
         public int DuracaoAtendimento { get; set; }
         public string Observacoes { get; set; }
         public DateTime DataCriacao { get; set; } = DateTime.UtcNow;
-        public DataTime UltimaAtualizacao { get; set; }
+        public DateTime UltimaAtualizacao { get; set; }
 
         public int ClienteId { get; set; }
         public int ServicoId { get; set; }
