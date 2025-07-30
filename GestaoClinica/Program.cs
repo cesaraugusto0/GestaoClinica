@@ -1,22 +1,40 @@
 using GestaoClinica.Components;
+using GestaoClinica.Data.Context;
+using GestaoClinica.Services.Implementations;
+using GestaoClinica.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+// String de conexão do SQL Server
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-// Add MudBlazor services
+// Registrar o DbContext com SQL Server
+builder.Services.AddDbContext<SQLServerDbContext>(options =>
+{
+    options.UseSqlServer(connectionString);
+
+    if (builder.Environment.IsDevelopment())
+    {
+        options.EnableSensitiveDataLogging();
+        options.LogTo(Console.WriteLine);
+    }
+});
+
+// Registrar servicos de uso
+builder.Services.AddScoped<IPessoaService, PessoaService>();
+
 builder.Services.AddMudServices();
 
-// Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
