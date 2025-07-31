@@ -1,38 +1,65 @@
--- Primeiro, adicionar as colunas da tabela Pessoa na tabela Cliente
-ALTER TABLE Cliente
-ADD 
-    Nome VARCHAR(100) NOT NULL,
-    Telefone VARCHAR(20),
-    Email VARCHAR(100),
-    CPF VARCHAR(11) UNIQUE,
-    DataNascimento DATE,
-    EnderecoId INT;
+USE dbGestaoClinica;
+GO
 
--- Adicionar constraint de chave estrangeira para Endereço
-ALTER TABLE Cliente
-ADD CONSTRAINT FK_Cliente_Endereco FOREIGN KEY (EnderecoId) REFERENCES Endereco(IdEndereco);
+BEGIN TRY
+    BEGIN TRANSACTION;
 
--- Adicionar as colunas da tabela Pessoa na tabela Funcionario
-ALTER TABLE Funcionario
-ADD 
-    Nome VARCHAR(100) NOT NULL,
-    Telefone VARCHAR(20),
-    Email VARCHAR(100),
-    CPF VARCHAR(11) UNIQUE,
-    DataNascimento DATE,
-    EnderecoId INT;
+    -- Apagar dados existentes
+    DELETE FROM Cliente;
+    DELETE FROM Funcionario;
 
--- Adicionar constraint de chave estrangeira para Endereço
-ALTER TABLE Funcionario
-ADD CONSTRAINT FK_Funcionario_Endereco FOREIGN KEY (EnderecoId) REFERENCES Endereco(IdEndereco);
+    -- =================== ALTERAÇÕES NA TABELA Cliente ===================
+    ALTER TABLE Cliente
+    ADD 
+        Nome VARCHAR(100) NOT NULL DEFAULT 'Desconhecido',
+        Telefone VARCHAR(20),
+        Email VARCHAR(100),
+        CPF VARCHAR(11) UNIQUE,
+        DataNascimento DATE,
+        EnderecoId INT;
 
--- Exclui contraints
-ALTER TABLE Cliente DROP CONSTRAINT FK__Cliente__PessoaI__47DBAE45;
-ALTER TABLE Funcionario DROP CONSTRAINT FK__Funcionar__Pesso__48CFD27E;
-   
--- Finalmente, remover a tabela Pessoa (após garantir que todos os dados foram migrados)
-DROP TABLE Pessoa;
+    ALTER TABLE Cliente
+    ADD CONSTRAINT FK_Cliente_Endereco 
+    FOREIGN KEY (EnderecoId) REFERENCES Endereco(IdEndereco);
 
--- Remove coluna idPessoa DE CLIENTE e FUNCIONÁRIO
-ALTER TABLE Cliente DROP COLUMN PessoaId;
-ALTER TABLE Funcionario DROP COLUMN PessoaId;
+    -- =================== ALTERAÇÕES NA TABELA Funcionario ===================
+    ALTER TABLE Funcionario
+    ADD 
+        Nome VARCHAR(100) NOT NULL DEFAULT 'Desconhecido',
+        Telefone VARCHAR(20),
+        Email VARCHAR(100),
+        CPF VARCHAR(11) UNIQUE,
+        DataNascimento DATE,
+        EnderecoId INT;
+
+    ALTER TABLE Funcionario
+    ADD CONSTRAINT FK_Funcionario_Endereco 
+    FOREIGN KEY (EnderecoId) REFERENCES Endereco(IdEndereco);
+
+    -- Remover constraints antigas (referências à tabela Pessoa)
+    ALTER TABLE Cliente DROP CONSTRAINT FK__Cliente__PessoaI__47DBAE45;
+    ALTER TABLE Funcionario DROP CONSTRAINT FK__Funcionar__Pesso__48CFD27E;
+
+    -- Remover coluna PessoaId das tabelas
+    ALTER TABLE Cliente DROP COLUMN PessoaId;
+    ALTER TABLE Funcionario DROP COLUMN PessoaId;
+
+    -- Remover a tabela Pessoa (após migração)
+    DROP TABLE Pessoa;
+
+    -- Se tudo correr bem, confirma as alterações
+    COMMIT TRANSACTION;
+    PRINT 'Transação concluída com sucesso. Tabela Pessoa removida e estrutura atualizada.';
+END TRY
+BEGIN CATCH
+    -- Em caso de erro, desfaz todas as alterações
+    IF @@TRANCOUNT > 0
+        ROLLBACK TRANSACTION;
+
+    -- Exibe mensagem de erro
+    DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
+    DECLARE @ErrorSeverity INT = ERROR_SEVERITY();
+    DECLARE @ErrorState INT = ERROR_STATE();
+
+    RAISERROR('Erro na transação: %s', @ErrorSeverity, @ErrorState, @ErrorMessage);
+END CATCH;
