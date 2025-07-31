@@ -1,7 +1,13 @@
-﻿namespace GestaoClinica.Entities
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace GestaoClinica.Entities
 {
+    [Table("Servico")]
     public class Servico
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int IdServico { get; set; }
         public string NomeServico { get; set; }
         public string Descricao { get; set; }

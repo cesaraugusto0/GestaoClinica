@@ -1,0 +1,69 @@
+﻿@page "/servicos"
+@using GestaoClinica.Services.Interfaces
+@inject IServicoService ServicoService
+
+
+
+<MudContainer>
+    <MudCard>
+        <MudCardHeader>
+            <MudText Typo="Typo.h5">Listagem de Servicos</MudText>
+        </MudCardHeader>
+        <MudCardContent>
+            @if (servicos == null)
+            {
+                <MudProgressLinear Color="Color.Primary" Indeterminate="true" />
+            }
+            else
+            {
+                <MudTable Items="@servicos" Hover="true" Breakpoint="Breakpoint.None">
+                    <ToolBarContent>
+                        <MudTextField @bind-Value="searchString"
+                                      Placeholder="Pesquisar..."
+                                      Adornment="Adornment.Start"
+                                      AdornmentIcon="@Icons.Material.Filled.Search"
+                                      IconSize="Size.Medium" />
+                    </ToolBarContent>
+                    <HeaderContent>
+                        <MudTh>Código</MudTh>
+                        <MudTh>Nome</MudTh>
+                        <MudTh>Carga Horária</MudTh>
+                        <MudTh>Modalidade</MudTh>
+                        <MudTh>Status</MudTh>
+                        <MudTh>Ações</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Código">@context.Codigo</MudTd>
+                        <MudTd DataLabel="Nome">@context.Nome</MudTd>
+                        <MudTd DataLabel="Carga Horária">@context.CargaHoraria</MudTd>
+                        <MudTd DataLabel="Modalidade">@context.Modalidade</MudTd>
+                        <MudTd DataLabel="Status">
+                            <MudChip Color="@GetStatusColor(context.StatusCurso)"
+                                     Variant="Variant.Filled"
+                                     Size="Size.Small"
+                                     T="string">@context.StatusCurso</MudChip>
+                        </MudTd>
+                        <MudTd DataLabel="Ações">
+                            <MudIconButton Icon="@Icons.Material.Filled.Visibility"
+                                           Color="Color.Info"
+                                           OnClick="@(() => VisualizarCurso(context.CursoId))" />
+                            <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                           Color="Color.Warning"
+                                           OnClick="@(() => EditarCurso(context.CursoId))" />
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                           Color="Color.Error"
+                                           OnClick="@(() => ExcluirCurso(context))" />
+                        </MudTd>
+                    </RowTemplate>
+                    <PagerContent>
+                        <MudTablePager />
+                    </PagerContent>
+                </MudTable>
+            }
+        </MudCardContent>
+    </MudCard>
+</MudContainer>
+
+@code {
+
+}

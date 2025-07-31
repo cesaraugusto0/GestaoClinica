@@ -1,5 +1,7 @@
 using GestaoClinica.Components;
 using GestaoClinica.Data.Context;
+using GestaoClinica.Repository.Implementation;
+using GestaoClinica.Repository.Interfaces;
 using GestaoClinica.Services.Implementations;
 using GestaoClinica.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +25,7 @@ builder.Services.AddDbContext<SQLServerDbContext>(options =>
 
 // Registrar servicos de uso
 builder.Services.AddScoped<IPessoaService, PessoaService>();
+builder.Services.AddScoped<IServicoRepository, ServicoRepository>();
 
 builder.Services.AddMudServices();
 

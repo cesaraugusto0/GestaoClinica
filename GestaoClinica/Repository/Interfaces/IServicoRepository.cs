@@ -1,13 +1,12 @@
 ﻿using GestaoClinica.Entities;
 
-namespace GestaoClinica.Services.Interfaces
+namespace GestaoClinica.Repository.Interfaces
 {
-    public interface IServicoService
+    public interface IServicoRepository
     {
         Task<IEnumerable<Servico>> ListarServicoAsync();
         Task AdicionarAsync(Servico servico);
         Task AtualizarAsync(Servico servico);
         Task ExcluirAsync(Servico servico);
-
     }
 }
