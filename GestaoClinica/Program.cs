@@ -22,7 +22,7 @@ builder.Services.AddDbContext<SQLServerDbContext>(options =>
 });
 
 // Registrar servicos de uso
-builder.Services.AddScoped<IPessoaService, PessoaService>();
+builder.Services.AddScoped<IClienteService, ClienteService>();
 
 builder.Services.AddMudServices();
 

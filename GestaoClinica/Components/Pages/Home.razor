@@ -5,11 +5,11 @@
 @inject SQLServerDbContext DbContext
 @using Microsoft.EntityFrameworkCore
 
-<PageTitle>Lista de Pessoas</PageTitle>
+<PageTitle>Lista de Clientes</PageTitle>
 
 <MudContainer>
     <MudPaper Elevation="3" Class="pa-4">
-        <MudText Typo="Typo.h3" GutterBottom="true">Lista de Pessoas</MudText>
+        <MudText Typo="Typo.h3" GutterBottom="true">Lista de Clientes</MudText>
 
         @if (isLoading)
         {
@@ -20,13 +20,13 @@
         {
             <MudAlert Severity="Severity.Error">@errorMessage</MudAlert>
         }
-        else if (!_pessoas.Any())
+        else if (!_clientes.Any())
         {
-            <MudAlert Severity="Severity.Info">Nenhuma pessoa cadastrada</MudAlert>
+            <MudAlert Severity="Severity.Info">Nenhuma Clientes cadastrada</MudAlert>
         }
         else
         {
-            <MudTable Items="@_pessoas" Hover="true" Breakpoint="Breakpoint.Sm">
+            <MudTable Items="@_clientes" Hover="true" Breakpoint="Breakpoint.Sm">
                 <HeaderContent>
                     <MudTh>ID</MudTh>
                     <MudTh>Nome</MudTh>
@@ -35,7 +35,7 @@
                     <MudTh>CPF</MudTh>
                 </HeaderContent>
                 <RowTemplate>
-                    <MudTd>@context.IdPessoa</MudTd>
+                    <MudTd>@context.IdCliente</MudTd>
                     <MudTd>@context.Nome</MudTd>
                     <MudTd>@context.Email</MudTd>
                     <MudTd>@context.Telefone</MudTd>
@@ -43,13 +43,13 @@
                 </RowTemplate>
             </MudTable>
             
-            <MudText Class="mt-4">Total de pessoas: @_pessoas.Count</MudText>
+            <MudText Class="mt-4">Total de clientes: @_clientes.Count</MudText>
         }
     </MudPaper>
 </MudContainer>
 
 @code {
-    private List<Pessoa> _pessoas = new();
+    private List<Cliente> _clientes = new();
     private bool isLoading = true;
     private string errorMessage;
 
@@ -58,11 +58,11 @@
         try
         {
             // Carrega os dados diretamente do DbContext
-            _pessoas = await DbContext.pessoas.ToListAsync();
+            _clientes = await DbContext.clientes.ToListAsync();
             
-            if (_pessoas.Any())
+            if (_clientes.Any())
             {
-                Console.WriteLine($"Total de pessoas carregadas: {_pessoas.Count}");
+                Console.WriteLine($"Total de pessoas carregadas: {_clientes.Count}");
             }
         }
         catch (Exception ex)

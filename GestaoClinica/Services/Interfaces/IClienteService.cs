@@ -1,6 +1,9 @@
-﻿namespace GestaoClinica.Services.Interfaces
+﻿using GestaoClinica.Entities;
+
+namespace GestaoClinica.Services.Interfaces
 {
-    public class IClienteService
+    public interface IClienteService
     {
+        Task<IEnumerable<Cliente>> ListarClientesAsync();
     }
 }
