@@ -36,18 +36,41 @@ BEGIN TRY
     ADD CONSTRAINT FK_Funcionario_Endereco 
     FOREIGN KEY (EnderecoId) REFERENCES Endereco(IdEndereco);
 
-    -- Remover constraints antigas (referências à tabela Pessoa)
-    ALTER TABLE Cliente DROP CONSTRAINT FK__Cliente__PessoaI__47DBAE45;
-    ALTER TABLE Funcionario DROP CONSTRAINT FK__Funcionar__Pesso__48CFD27E;
+    -- Remover constraints antigas (referências à coluna PessoaId) de forma dinâmica
+    DECLARE @ConstraintName_Cliente NVARCHAR(128);
+    SELECT @ConstraintName_Cliente = name
+    FROM sys.foreign_keys
+    WHERE parent_object_id = OBJECT_ID('Cliente')
+      AND referenced_object_id = OBJECT_ID('Pessoa');
+
+    IF @ConstraintName_Cliente IS NOT NULL
+    BEGIN
+        EXEC('ALTER TABLE Cliente DROP CONSTRAINT ' + @ConstraintName_Cliente);
+    END
+
+    DECLARE @ConstraintName_Funcionario NVARCHAR(128);
+    SELECT @ConstraintName_Funcionario = name
+    FROM sys.foreign_keys
+    WHERE parent_object_id = OBJECT_ID('Funcionario')
+      AND referenced_object_id = OBJECT_ID('Pessoa');
+
+    IF @ConstraintName_Funcionario IS NOT NULL
+    BEGIN
+        EXEC('ALTER TABLE Funcionario DROP CONSTRAINT ' + @ConstraintName_Funcionario);
+    END
 
     -- Remover coluna PessoaId das tabelas
-    ALTER TABLE Cliente DROP COLUMN PessoaId;
-    ALTER TABLE Funcionario DROP COLUMN PessoaId;
+    IF COL_LENGTH('Cliente', 'PessoaId') IS NOT NULL
+        ALTER TABLE Cliente DROP COLUMN PessoaId;
+
+    IF COL_LENGTH('Funcionario', 'PessoaId') IS NOT NULL
+        ALTER TABLE Funcionario DROP COLUMN PessoaId;
 
     -- Remover a tabela Pessoa (após migração)
-    DROP TABLE Pessoa;
+    IF OBJECT_ID('Pessoa', 'U') IS NOT NULL
+        DROP TABLE Pessoa;
 
-    -- Se tudo correr bem, confirma as alterações
+    -- Confirma as alterações
     COMMIT TRANSACTION;
     PRINT 'Transação concluída com sucesso. Tabela Pessoa removida e estrutura atualizada.';
 END TRY
