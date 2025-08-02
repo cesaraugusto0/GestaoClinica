@@ -1,5 +1,7 @@
 ﻿using GestaoClinica.Entities;
+using GestaoClinica.Entities.Enums;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GestaoClinica.Data.Context
 {
@@ -17,5 +19,12 @@ namespace GestaoClinica.Data.Context
         // public DbSet<Servico> servicos { get; set; }
         // public DbSet<StatusAgenda> statusAgendas { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Agendamento>()
+                .Property(a => a.StatusAgenda)
+                .HasConversion(new EnumToStringConverter<StatusAgendaEnum>());
+        }
     }
 }

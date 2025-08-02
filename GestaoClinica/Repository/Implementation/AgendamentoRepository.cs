@@ -19,7 +19,6 @@ namespace GestaoClinica.Repository.Implementation
             return _context.Agendamentos
                 .Include(a => a.Cliente)
                 .Include(a => a.Servico)
-                .Include(a => a.StatusAgenda)
                 .Include(a => a.Funcionario);
         }
         public async Task<IEnumerable<Agendamento>> ListarAgendamentosAsync()
