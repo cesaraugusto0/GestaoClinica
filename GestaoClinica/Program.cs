@@ -7,6 +7,8 @@ using GestaoClinica.Services.Implementations;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
 using GestaoClinica.Repository.Implementation;
+using GestaoClinica.Entities;
+using GestaoClinica.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +33,8 @@ builder.Services.AddScoped<IFuncionarioRepository, FuncionarioRepository>();
 builder.Services.AddScoped<IFuncionarioService, FuncionarioService>();
 builder.Services.AddScoped<IServicoRepository, ServicoRepository>();
 builder.Services.AddScoped<IServicoService, ServicoService>();
+builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
+builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 
 
 

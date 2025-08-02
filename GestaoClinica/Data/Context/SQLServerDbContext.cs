@@ -1,5 +1,6 @@
 ﻿using GestaoClinica.Entities;
 using Microsoft.EntityFrameworkCore;
+using GestaoClinica.Entities.GestaoClinica.Entities;
 
 namespace GestaoClinica.Data.Context
 {

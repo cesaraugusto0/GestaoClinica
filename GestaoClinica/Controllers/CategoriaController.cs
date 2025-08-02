@@ -41,7 +41,7 @@ namespace GestaoClinica.Controllers
                 });
             } catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(500, new { message = "Erro ao listar categoria.", error = ex.Message });
             }
         }
 
@@ -69,7 +69,7 @@ namespace GestaoClinica.Controllers
             }
         }
 
-        [HttpPut("{idCategoria}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> PutCliente(int idCategoria, [FromBody] Categoria categoria)
         {
             if (!ModelState.IsValid)
@@ -97,6 +97,24 @@ namespace GestaoClinica.Controllers
                     error = ex.Message,
                     inner = ex.InnerException?.Message
                 });
+            }
+        }
+
+        [HttpDelete("{idCategoria}")]
+        public async Task<IActionResult> DeleteCliente(int idCategoria)
+        {
+            try
+            {
+                await _categoriaService.ExcluirAsync(idCategoria);
+                return Ok(new { message = $"Categoria com ID {idCategoria} excluído com sucesso!" });
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound(new { message = $"Cliente com ID {idCategoria} não encontrado." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Erro ao excluir cliente.", error = ex.Message });
             }
         }
     }
