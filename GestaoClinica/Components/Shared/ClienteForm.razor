@@ -1,4 +1,4 @@
-﻿@using GestaoClinica.DTO
+﻿@using GestaoClinica.ViewModel
 @using Microsoft.AspNetCore.Components.Forms
 
 <MudForm @ref="form" @onsubmit="HandleSubmit">
@@ -31,9 +31,9 @@
 
 @code {
     [Parameter]
-    public ClienteDTO Cliente { get; set; } = new ClienteDTO
+    public ClienteViewModel Cliente { get; set; } = new ClienteViewModel
         {
-            Endereco = new EnderecoDTO()
+            Endereco = new EnderecoViewModel()
         };
 
     [Parameter]
@@ -49,7 +49,7 @@
     {
         if (Cliente.Endereco == null)
         {
-            Cliente.Endereco = new EnderecoDTO();
+            Cliente.Endereco = new EnderecoViewModel();
         }
     }
 

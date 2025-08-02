@@ -1,36 +1,23 @@
 using GestaoClinica.Components;
 using GestaoClinica.Data.Context;
 using GestaoClinica.Repository.Interfaces;
-using GestaoClinica.Repository;
-using GestaoClinica.Data.Services.Interfaces;
-using GestaoClinica.Data.Services.Implementations;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
+using GestaoClinica.Services.Implementations;
+using GestaoClinica.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages(); // ← Essencial para páginas Razor
+builder.Services.AddServerSideBlazor();
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-// --- Banco de dados ---
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? "Server=localhost;Database=GestaoClinicaDb;User Id=sa;Password=yourStrong(!)Password;TrustServerCertificate=True";
 
-builder.Services.AddDbContext<SQLServerDbContext>(options =>
-{
-    options.UseSqlServer(connectionString);
-    if (builder.Environment.IsDevelopment())
-    {
-        options.EnableSensitiveDataLogging();
-        options.LogTo(Console.WriteLine);
-    }
-});
 
 // --- Serviços (Repository e Service) ---
-builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
-builder.Services.AddScoped<IClienteDTOService, MockClienteDTOService>();
+builder.Services.AddScoped<IClienteService, MockClienteService>();
 
 builder.Services.AddMudServices(config =>
 {
@@ -55,11 +42,11 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseRouting();
 app.UseAntiforgery();
 
+// --- Mapeamento de componentes e rotas ---
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
-
-app.MapFallbackToFile("/_Host.cshtml"); // ← Alterado para MapFallbackToFile
 
 app.Run();

@@ -1,4 +1,4 @@
-﻿@using GestaoClinica.DTO
+﻿@using GestaoClinica.ViewModel
 
 <MudCard>
     <MudCardContent>
@@ -23,7 +23,7 @@
 
 @code {
     [Parameter]
-    public ClienteDTO Cliente { get; set; } = new ClienteDTO();
+    public ClienteViewModel Cliente { get; set; } = new ClienteViewModel();
 
     [Parameter]
     public EventCallback OnClose { get; set; }

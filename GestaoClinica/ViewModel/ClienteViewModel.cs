@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace GestaoClinica.DTO
+namespace GestaoClinica.ViewModel
 {
-    public class ClienteDTO
+    public class ClienteViewModel
     {
         public int IdCliente { get; set; }
 
@@ -31,7 +31,7 @@ namespace GestaoClinica.DTO
 
         public int? EnderecoId { get; set; }
 
-        public EnderecoDTO? Endereco { get; set; }
+        public EnderecoViewModel? Endereco { get; set; }
 
         // Propriedades calculadas para exibição
         public string EnderecoCompleto => Endereco != null

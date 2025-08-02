@@ -1,19 +1,21 @@
 ﻿@using Microsoft.AspNetCore.Components
 @using Microsoft.AspNetCore.Components.Web
-@using MudBlazor.Services
+@using MudBlazor
+@using GestaoClinica.Components.Layout
 
 <MudThemeProvider />
 <MudDialogProvider FullWidth="true" MaxWidth="MaxWidth.Medium" />
 <MudSnackbarProvider />
 
-<Router AppAssembly="@typeof(Routes).Assembly">
+<Router AppAssembly="@typeof(App).Assembly">
     <Found Context="routeData">
         <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
     </Found>
     <NotFound>
         <LayoutView Layout="@typeof(MainLayout)">
             <MudPaper Elevation="1" Style="padding: 24px; margin: 24px;">
-                <MudTypography Variant="Variant.h4" Style="margin-bottom: 16px;">
+                <MudTypography Variant="Variant.h4" Style="margin-bottom: 16px; color: #dc3545;">
+                    <MudIcon Icon="@Icons.Material.Filled.Error" Size="Size.Large" />
                     Página Não Encontrada
                 </MudTypography>
                 <MudTypography Variant="Variant.body1" Style="margin-bottom: 24px;">
@@ -21,6 +23,7 @@
                 </MudTypography>
                 <MudButton Variant="Variant.Filled" Color="Color.Primary" 
                            Href="/" Style="margin-top: 16px;">
+                    <MudIcon Icon="@Icons.Material.Filled.Home" Style="margin-right: 8px;" />
                     Voltar para o Início
                 </MudButton>
             </MudPaper>

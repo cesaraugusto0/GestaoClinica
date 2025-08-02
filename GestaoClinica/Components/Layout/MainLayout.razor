@@ -6,38 +6,26 @@
 <MudSnackbarProvider />
 
 <MudLayout>
-    <MudAppBar Elevation="1">
+    <MudAppBar Elevation="1" Style="background-color: #57A8A1;">
         <MudIconButton Icon="@Icons.Material.Filled.Menu"
                        Color="Color.Inherit"
                        Edge="Edge.Start"
                        OnClick="@DrawerToggle" />
 
-        <MudText Typo="Typo.h6" Class="ml-3">
+        <MudText Typo="Typo.h6" Class="ml-3" Style="color: #FFFFFF;">
             <MudIcon Icon="@Icons.Material.Filled.LocalHospital" Size="Size.Small" Class="mr-2" />
-            ClinicPro - Gestão Clínica
+            ClinicPro
         </MudText>
 
         <MudSpacer />
 
-        <!-- Barra de pesquisa global -->
-        <MudTextField @bind-Value="searchTerm"
-                      Placeholder="Pesquisar pacientes..."
-                      Adornment="Adornment.Start"
-                      AdornmentIcon="@Icons.Material.Filled.Search"
-                      Variant="Variant.Outlined"
-                      Class="mx-4"
-                      Style="width: 300px;"
-                      Dense="true"
-                      HideDetails="true" />
-
         <MudIconButton Icon="@(DarkLightModeButtonIcon)"
-                       Color="Color.Inherit"
+                       Color="Color.Inherit" Style="color: #FFFFFF;"
                        OnClick="@DarkModeToggle"
                        Title="Alternar modo claro/escuro" />
 
-        <!-- Menu de perfil do usuário -->
         <MudIconButton Icon="@Icons.Material.Filled.AccountCircle"
-                       Color="Color.Inherit"
+                       Color="Color.Inherit" Style="color: #FFFFFF;"
                        Edge="Edge.End"
                        Title="Perfil do usuário">
             <MudMenu AnchorOrigin="Origin.TopRight"
@@ -63,13 +51,7 @@
                ClipMode="DrawerClipMode.Always"
                Elevation="2"
                Width="260px">
-        <MudDrawerHeader>
-            <MudText Typo="Typo.h6">
-                <MudIcon Icon="@Icons.Material.Filled.LocalHospital" Size="Size.Small" Class="mr-2" />
-                ClinicPro
-            </MudText>
-        </MudDrawerHeader>
-
+        
         <NavMenu />
     </MudDrawer>
 
@@ -78,62 +60,12 @@
     </MudMainContent>
 </MudLayout>
 
-<!-- Error handling -->
-<div id="blazor-error-ui" data-nosnippet>
-    <div class="error-content">
-        <MudIcon Icon="@Icons.Material.Filled.Error" Color="Color.Error" Size="Size.Large" />
-        <MudText Typo="Typo.h6" Class="my-2">Ocorreu um erro</MudText>
-        <MudText>An unhandled error has occurred.</MudText>
-        <div class="error-actions">
-            <MudButton Variant="Variant.Outlined" OnClick="@(() => ReloadPage())" Class="mr-2">
-                Recarregar
-            </MudButton>
-            <MudButton Variant="Variant.Outlined" OnClick="@(() => HideError())">
-                Fechar
-            </MudButton>
-        </div>
-    </div>
-</div>
-
-<style>
-    #blazor-error-ui {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0,0,0,0.8);
-        z-index: 10000;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .error-content {
-        background: var(--mud-palette-surface);
-        padding: 2rem;
-        border-radius: 8px;
-        text-align: center;
-        max-width: 500px;
-        margin: 1rem;
-    }
-
-    .error-actions {
-        margin-top: 1rem;
-        display: flex;
-        justify-content: center;
-        gap: 1rem;
-    }
-</style>
-
 @code {
     [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
-    [Inject] private NavigationManager Navigation { get; set; } = default!;
 
-    private bool _drawerOpen = true;
-    private bool _isDarkMode = true;
+    private bool _isDarkMode = false; // Modo claro por padrão
     private MudTheme? _theme = null;
-    private string searchTerm = string.Empty;
+    private bool _drawerOpen = true; // Drawer aberto por padrão
 
     protected override void OnInitialized()
     {
@@ -141,8 +73,21 @@
 
         _theme = new MudTheme
             {
-                PaletteLight = _lightPalette,
-                PaletteDark = _darkPalette,
+                PaletteLight = new PaletteLight()
+                {
+                    Primary = "#57A8A1", // Verde principal
+                    Secondary = "#ff4081",
+                    Background = "#FFFFFF", // Fundo branco
+                    AppbarBackground = "#57A8A1", // Barra superior verde
+                    AppbarText = "#FFFFFF", // Texto branco
+                    DrawerBackground = "#FFFFFF", // Drawer branco
+                    DrawerText = "#424242", // Texto do drawer
+                    Surface = "#FFFFFF", // Superfícies brancas
+                },
+                PaletteDark = new PaletteDark()
+                {
+                    Primary = "#57A8A1", // Mesmo verde no modo escuro
+                },
                 LayoutProperties = new LayoutProperties()
             };
     }
@@ -157,69 +102,9 @@
         _isDarkMode = !_isDarkMode;
     }
 
-    private readonly PaletteLight _lightPalette = new()
-        {
-            Primary = "#1976d2",
-            Secondary = "#ff4081",
-            Background = "#fafafa",
-            AppbarBackground = "rgba(255, 255, 255, 0.95)",
-            AppbarText = "#424242",
-            DrawerBackground = "#ffffff",
-            DrawerText = "#424242",
-            DrawerIcon = "#616161",
-            Surface = "#ffffff",
-            GrayLight = "#e0e0e0",
-            GrayLighter = "#f5f5f5",
-            Success = "#4caf50",
-            Warning = "#ff9800",
-            Error = "#f44336",
-            Info = "#2196f3"
-        };
-
-    private readonly PaletteDark _darkPalette = new()
-        {
-            Primary = "#2196f3",
-            Secondary = "#ff4081",
-            Background = "#121212",
-            AppbarBackground = "rgba(30, 30, 30, 0.95)",
-            AppbarText = "#ffffff",
-            DrawerBackground = "#1e1e1e",
-            DrawerText = "#ffffff",
-            DrawerIcon = "#959595",
-            Surface = "#1e1e1e",
-            GrayLight = "#2d2d2d",
-            GrayLighter = "#363636",
-            Success = "#4caf50",
-            Warning = "#ff9800",
-            Error = "#f44336",
-            Info = "#2196f3",
-            TextPrimary = "#ffffff",
-            TextSecondary = "#b3b3b3"
-        };
-
     public string DarkLightModeButtonIcon => _isDarkMode switch
     {
         true => Icons.Material.Filled.LightMode,
         false => Icons.Material.Filled.DarkMode,
     };
-
-    private void OnSearchChanged(ChangeEventArgs args)
-    {
-        searchTerm = args.Value?.ToString() ?? string.Empty;
-        // Aqui você pode implementar a lógica de busca global
-        if (!string.IsNullOrWhiteSpace(searchTerm) && searchTerm.Length > 2)
-        {
-            // Exemplo: Navigation.NavigateTo($"/busca?term={searchTerm}");
-        }
-    }
-
-    private void ReloadPage()
-    {
-        Navigation.NavigateTo(Navigation.Uri, forceLoad: true);
-    }
-
-    private void HideError()
-    {
-        JSRuntime.InvokeVoidAsync("eval", "document.getElementById('blazor-error-ui').style.display = 'none';");
-    }
 }

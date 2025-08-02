@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace GestaoClinica.DTO
+namespace GestaoClinica.ViewModel
 {
-    public class EnderecoDTO
+    public class EnderecoViewModel
     {
         [StringLength(255, ErrorMessage = "Logradouro deve ter no máximo 255 caracteres")]
         public string Logradouro { get; set; } = string.Empty;

@@ -1,11 +1,11 @@
 ﻿@page "/clientes"
-@using GestaoClinica.DTO
-@using GestaoClinica.Data.Services.Interfaces
-@inject IClienteDTOService ClienteService
+@using GestaoClinica.ViewModel
+@using GestaoClinica.Services.Interfaces
+@inject IClienteService ClienteService
 @inject ISnackbar Snackbar
 @inject IJSRuntime JSRuntime
 
-<MudPaper Elevation="1" Style="padding: 16px; margin-bottom: 16px;">
+<MudPaper Elevation="1" Style="padding: 16px; margin-bottom: 16px; background-color: #FFFFFF;">
     <MudGrid>
         <MudItem xs="12" sm="8" md="6">
             <MudTextField @bind-Value="searchTerm" 
@@ -14,7 +14,8 @@
                           AdornmentIcon="@Icons.Material.Filled.Search"
                           Variant="Variant.Outlined" 
                           DebounceInterval="300"
-                          @oninput="OnSearchChanged" />
+                          @oninput="OnSearchChanged" 
+                          Style="width: 100%;" />
         </MudItem>
         <MudItem xs="12" sm="4" md="6">
             <div style="display: flex; justify-content: flex-end; gap: 8px;">
@@ -29,8 +30,8 @@
     </MudGrid>
 </MudPaper>
 
-<MudPaper Elevation="1">
-    <MudTable T="ClienteDTO" 
+<MudPaper Elevation="1" Style="background-color: #FFFFFF;">
+    <MudTable T="ClienteViewModel" 
               Items="clientes" 
               Hover="true" 
               SortLabel="Ordenar por" 
@@ -43,11 +44,11 @@
             <MudSwitch @bind-Checked="dense" Color="Color.Secondary" T="bool">Modo compacto</MudSwitch>
         </ToolBarContent>
         <HeaderContent>
-            <MudTh><MudTableSortLabel SortBy="new Func<ClienteDTO, object>(x => x.Nome)">Nome</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<ClienteDTO, object>(x => x.CPF)">CPF</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<ClienteDTO, object>(x => x.Telefone)">Telefone</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<ClienteDTO, object>(x => x.Email)">Email</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<ClienteDTO, object>(x => x.Ativo)">Status</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<ClienteViewModel, object>(x => x.Nome)">Nome</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<ClienteViewModel, object>(x => x.CPF)">CPF</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<ClienteViewModel, object>(x => x.Telefone)">Telefone</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<ClienteViewModel, object>(x => x.Email)">Email</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<ClienteViewModel, object>(x => x.Ativo)">Status</MudTableSortLabel></MudTh>
             <MudTh>Ações</MudTh>
         </HeaderContent>
         <RowTemplate>
@@ -62,13 +63,7 @@
                          T="string" />
             </MudTd>
             <MudTd DataLabel="Ações">
-                <MudButton Size="Size.Small" 
-                           Variant="Variant.Text" 
-                           Color="Color.Info" 
-                           StartIcon="@Icons.Material.Filled.Visibility"
-                           OnClick="@(() => OpenViewModal(context))">
-                    Ver
-                </MudButton>
+                @* Botão "Ver" removido conforme solicitado *@
                 <MudButton Size="Size.Small" 
                            Variant="Variant.Text" 
                            Color="Color.Primary" 
@@ -91,7 +86,6 @@
     </MudTable>
 </MudPaper>
 
-<!-- Diálogos usando variáveis booleanas -->
 <MudDialog IsVisible="@showCreateDialog" OnClose="@CloseCreateModal" MaxWidth="MaxWidth.Large">
     <DialogContent>
         <ClienteForm Cliente="newCliente" OnSubmit="HandleCreate" OnCancel="CloseCreateModal" />
@@ -104,25 +98,19 @@
     </DialogContent>
 </MudDialog>
 
-<MudDialog IsVisible="@showViewDialog" OnClose="@CloseViewModal" MaxWidth="MaxWidth.Medium">
-    <DialogContent>
-        <ClienteView Cliente="selectedCliente" OnClose="CloseViewModal" />
-    </DialogContent>
-</MudDialog>
-
 @code {
-    private IEnumerable<ClienteDTO> clientes = new List<ClienteDTO>();
-    private IEnumerable<ClienteDTO> allClientes = new List<ClienteDTO>();
+    private IEnumerable<ClienteViewModel> clientes = new List<ClienteViewModel>();
+    private IEnumerable<ClienteViewModel> allClientes = new List<ClienteViewModel>();
     private string searchTerm = string.Empty;
     private bool dense = false;
-    private ClienteDTO newCliente = new ClienteDTO { Endereco = new EnderecoDTO() };
-    private ClienteDTO selectedCliente = new ClienteDTO();
-    private MudTable<ClienteDTO> tableInstance = null!;
+    private ClienteViewModel newCliente = new ClienteViewModel { Endereco = new EnderecoViewModel() };
+    private ClienteViewModel selectedCliente = new ClienteViewModel();
+    private MudTable<ClienteViewModel> tableInstance = null!;
 
     // Variáveis de controle para visibilidade dos diálogos
     private bool showCreateDialog = false;
     private bool showEditDialog = false;
-    private bool showViewDialog = false;
+    // Variável showViewDialog removida conforme solicitado
 
     protected override async Task OnInitializedAsync()
     {
@@ -133,7 +121,7 @@
     {
         try
         {
-            allClientes = await ClienteService.GetAllClientesAsync();
+            allClientes = await ClienteService.ListarClienteAsync();
             clientes = allClientes;
         }
         catch (Exception ex)
@@ -152,7 +140,7 @@
         }
         else
         {
-            clientes = await ClienteService.SearchClientesAsync(searchTerm);
+            clientes = await ClienteService.ProcurarClientesAsync(searchTerm);
         }
         
         StateHasChanged();
@@ -160,7 +148,7 @@
 
     private void OpenCreateModal()
     {
-        newCliente = new ClienteDTO { Endereco = new EnderecoDTO() };
+        newCliente = new ClienteViewModel { Endereco = new EnderecoViewModel() };
         showCreateDialog = true;
     }
 
@@ -173,7 +161,7 @@
     {
         try
         {
-            await ClienteService.CreateClienteAsync(newCliente);
+            await ClienteService.AdicionarAsync(newCliente);
             await LoadClientes();
             Snackbar.Add("Cliente criado com sucesso!", Severity.Success);
             CloseCreateModal();
@@ -184,9 +172,9 @@
         }
     }
 
-    private void OpenEditModal(ClienteDTO cliente)
+    private void OpenEditModal(ClienteViewModel cliente)
     {
-        selectedCliente = new ClienteDTO
+        selectedCliente = new ClienteViewModel
         {
             IdCliente = cliente.IdCliente,
             Nome = cliente.Nome,
@@ -197,7 +185,7 @@
             Observacoes = cliente.Observacoes,
             Ativo = cliente.Ativo,
             EnderecoId = cliente.EnderecoId,
-            Endereco = cliente.Endereco != null ? new EnderecoDTO
+            Endereco = cliente.Endereco != null ? new EnderecoViewModel
             {
                 Logradouro = cliente.Endereco.Logradouro,
                 Numero = cliente.Endereco.Numero,
@@ -205,7 +193,7 @@
                 Cidade = cliente.Endereco.Cidade,
                 Uf = cliente.Endereco.Uf,
                 Cep = cliente.Endereco.Cep
-            } : new EnderecoDTO()
+            } : new EnderecoViewModel()
         };
         showEditDialog = true;
     }
@@ -219,7 +207,7 @@
     {
         try
         {
-            await ClienteService.UpdateClienteAsync(selectedCliente);
+            await ClienteService.AtualizarAsync(selectedCliente);
             await LoadClientes();
             Snackbar.Add("Cliente atualizado com sucesso!", Severity.Success);
             CloseEditModal();
@@ -230,16 +218,7 @@
         }
     }
 
-    private void OpenViewModal(ClienteDTO cliente)
-    {
-        selectedCliente = cliente;
-        showViewDialog = true;
-    }
-
-    private void CloseViewModal()
-    {
-        showViewDialog = false;
-    }
+    // Métodos OpenViewModal e CloseViewModal removidos conforme solicitado
 
     private async Task ConfirmDelete(int id)
     {
@@ -253,7 +232,7 @@
         {
             try
             {
-                await ClienteService.DeleteClienteAsync(id);
+                await ClienteService.ExcluirAsync(id);
                 await LoadClientes();
                 Snackbar.Add("Cliente excluído com sucesso!", Severity.Success);
             }
