@@ -21,19 +21,50 @@ namespace GestaoClinica.Controllers
         /// <summary>
         /// Lista todos os clientes
         /// </summary>
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Cliente>>> GetClientes()
+        // Em ClientesController.cs - Método GetClientes()
+
+[HttpGet]
+public async Task<ActionResult> GetClientes()
+{
+    try
+    {
+        var clientes = await _clienteService.ListarClienteAsync();
+
+        var resultado = clientes.Select(c => new
         {
-            try
+            c.IdCliente,
+            c.Observacoes,
+            c.Ativo,
+            c.Nome,
+            c.Telefone,
+            c.Email,
+            CPF = c.CPF, // Note: a propriedade é CPF (com F), não cpf
+            c.DataNascimento,
+            c.DataCriacao,
+            c.UltimaAtualizacao,
+            Endereco = c.Endereco == null ? null : new
             {
-                var clientes = await _clienteService.ListarClienteAsync();
-                return Ok(new { message = "Clientes listados com sucesso!", data = clientes });
+                Id = c.Endereco.IdEndereco,
+                c.Endereco.Logradouro,
+                c.Endereco.Numero,
+                c.Endereco.Complemento,
+                c.Endereco.Cidade,
+                c.Endereco.Uf,
+                c.Endereco.Cep
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = "Erro ao listar clientes.", error = ex.Message });
-            }
-        }
+        }).ToList();
+
+        return Ok(new
+        {
+            message = "Clientes listados com sucesso!",
+            data = resultado
+        });
+    }
+    catch (Exception ex)
+    {
+        return StatusCode(500, new { message = "Erro ao listar clientes.", error = ex.Message });
+    }
+}
 
         /// <summary>
         /// Busca cliente por ID

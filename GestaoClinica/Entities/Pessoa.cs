@@ -1,6 +1,6 @@
 ﻿namespace GestaoClinica.Entities
 {
-    public class Pessoa
+    public abstract class Pessoa
     {
         public Pessoa()
         {
@@ -13,7 +13,6 @@
         public DateTime DataCriacao { get; set; } = DateTime.UtcNow;
         public DateTime UltimaAtualizacao { get; set; } = DateTime.UtcNow;
         
-        public int? EnderecoId { get; set; }
-        // public Endereco Endereco { get; set; }
+
     }
 }

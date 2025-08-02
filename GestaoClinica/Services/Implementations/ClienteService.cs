@@ -9,8 +9,6 @@ namespace GestaoClinica.Services.Implementations
     public class ClienteService : IClienteService
     {
         private readonly IClienteRepository _clienteRepository;
-        private static readonly Random _random = new Random();
-
 
         public ClienteService(IClienteRepository clienteRepository)
         {
@@ -24,12 +22,10 @@ namespace GestaoClinica.Services.Implementations
                 throw new ArgumentException("O nome é obrigatório!");
             }
 
-            cliente.IdCliente = GerarId();
             cliente.DataCriacao = DateTime.Now;
             cliente.UltimaAtualizacao = DateTime.Now;
             cliente.Ativo = true;
 
-            // Não force IdCliente → o banco gera
             await _clienteRepository.AdicionarAsync(cliente);
         }
 
@@ -59,13 +55,5 @@ namespace GestaoClinica.Services.Implementations
             return cliente;
         }
 
-
-        private int GerarId()
-        {
-            lock (_random) // Evita problemas em execução multi-thread
-            {
-                return _random.Next(10000000, 100000000); // Gera número entre 10.000.000 e 99.999.999
-            }
-        }
     }
 }
