@@ -1,14 +1,21 @@
-﻿namespace GestaoClinica.Entities
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace GestaoClinica.Entities
 {
-    public class Cliente:Pessoa
+    [Table("Cliente")]
+    public class Cliente : Pessoa
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int IdCliente { get; set; }
         public string Observacoes { get; set; }
         public bool Ativo { get; set; }
-        public DateTime DataCriacao { get; set; } = DateTime.UtcNow;
-        public DateTime UltimaAtualizacao { get; set; }
 
-        public ICollection<Agendamento> Agendamentos { get; set; } = new List<Agendamento>();
+        public int? EnderecoId { get; set; }
+        public Endereco Endereco { get; set; }
+
+        //public ICollection<Agendamento> Agendamentos { get; set; } = new List<Agendamento>();
 
         public Cliente()
         {
