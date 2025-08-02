@@ -13,6 +13,7 @@ namespace GestaoClinica.Entities
         public bool Ativo { get; set; }
 
         public int? EnderecoId { get; set; }
+
         public Endereco Endereco { get; set; }
 
         //public ICollection<Agendamento> Agendamentos { get; set; } = new List<Agendamento>();
