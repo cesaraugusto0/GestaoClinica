@@ -26,6 +26,8 @@ builder.Services.AddDbContext<SQLServerDbContext>(options =>
 // --- Serviços (Repository e Service) ---
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
 builder.Services.AddScoped<IClienteService, ClienteService>();
+builder.Services.AddScoped<IFuncionarioRepository, FuncionarioRepository>();
+builder.Services.AddScoped<IFuncionarioService, FuncionarioService>();
 
 // --- Blazor e MudBlazor ---
 builder.Services.AddRazorComponents()

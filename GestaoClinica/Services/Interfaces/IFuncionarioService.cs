@@ -1,6 +1,13 @@
-﻿namespace GestaoClinica.Services.Interfaces
+﻿using GestaoClinica.Entities;
+
+namespace GestaoClinica.Services.Interfaces
 {
-    public class IFuncionarioService
+    public interface IFuncionarioService
     {
+        Task AdicionarAsync(Funcionario funcionario);
+        Task AtualizarAsync(Funcionario funcionario);
+        Task ExcluirAsync(int id);
+        Task<IEnumerable<Funcionario>> ListarFuncionarioAsync();
+        Task<Funcionario> ObterFuncionarioPorIdAsync(int id);
     }
 }
