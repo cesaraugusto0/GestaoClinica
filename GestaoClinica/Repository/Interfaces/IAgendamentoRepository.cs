@@ -1,9 +1,10 @@
 ﻿using GestaoClinica.Entities;
 
-namespace GestaoClinica.Services.Interfaces
+namespace GestaoClinica.Repository.Interfaces
 {
-    public interface IAgendamentoService
+    public interface IAgendamentoRepository
     {
+
         Task<IEnumerable<Agendamento>> ListarAgendamentosPorPeriodoAsync(DateTime dataInicio, DateTime dataFim);
         Task<IEnumerable<Agendamento>> ListarAgendamentosPorClienteAsync(int idCliente);
         Task<IEnumerable<Agendamento>> ListarAgendamentosPorFuncionarioAsync(int idFuncionario);

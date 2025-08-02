@@ -8,7 +8,7 @@ namespace GestaoClinica.Data.Context
         public SQLServerDbContext(DbContextOptions options) : base(options)
         {
         }
-        // public DbSet<Agendamento> agendamentos { get; set; }
+        public DbSet<Agendamento> Agendamentos { get; set; }
         // public DbSet<Categoria> categorias { get; set; }
         public DbSet<Cliente> Clientes { get; set;}
         // public DbSet<Endereco> enderecos { get; set; }
