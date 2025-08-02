@@ -21,12 +21,50 @@ namespace GestaoClinica.Controllers
         /// <summary>
         /// Lista todos os clientes
         /// </summary>
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Cliente>>> GetClientes()
+        // Em ClientesController.cs - Método GetClientes()
+
+[HttpGet]
+public async Task<ActionResult> GetClientes()
+{
+    try
+    {
+        var clientes = await _clienteService.ListarClienteAsync();
+
+        var resultado = clientes.Select(c => new
         {
-            var clientes = await _clienteService.ListarClienteAsync();
-            return Ok(clientes);
-        }
+            c.IdCliente,
+            c.Observacoes,
+            c.Ativo,
+            c.Nome,
+            c.Telefone,
+            c.Email,
+            CPF = c.CPF, // Note: a propriedade é CPF (com F), não cpf
+            c.DataNascimento,
+            c.DataCriacao,
+            c.UltimaAtualizacao,
+            Endereco = c.Endereco == null ? null : new
+            {
+                Id = c.Endereco.IdEndereco,
+                c.Endereco.Logradouro,
+                c.Endereco.Numero,
+                c.Endereco.Complemento,
+                c.Endereco.Cidade,
+                c.Endereco.Uf,
+                c.Endereco.Cep
+            }
+        }).ToList();
+
+        return Ok(new
+        {
+            message = "Clientes listados com sucesso!",
+            data = resultado
+        });
+    }
+    catch (Exception ex)
+    {
+        return StatusCode(500, new { message = "Erro ao listar clientes.", error = ex.Message });
+    }
+}
 
         /// <summary>
         /// Busca cliente por ID
@@ -37,7 +75,7 @@ namespace GestaoClinica.Controllers
             try
             {
                 var cliente = await _clienteService.ObterClientePorIdAsync(id);
-                return Ok(cliente);
+                return Ok(new { message = $"Cliente com ID {id} encontrado com sucesso!", data = cliente });
             }
             catch (KeyNotFoundException)
             {
@@ -45,7 +83,7 @@ namespace GestaoClinica.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "Erro interno.", error = ex.Message });
+                return StatusCode(500, new { message = "Erro interno ao buscar cliente.", error = ex.Message });
             }
         }
 
@@ -57,13 +95,14 @@ namespace GestaoClinica.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(new { message = "Dados inválidos.", errors = ModelState.Values.SelectMany(v => v.Errors) });
             }
 
             try
             {
                 await _clienteService.AdicionarAsync(cliente);
-                return CreatedAtAction(nameof(GetCliente), new { id = cliente.IdCliente }, cliente);
+                return CreatedAtAction(nameof(GetCliente), new { id = cliente.IdCliente }, 
+                    new { message = "Cliente criado com sucesso!", data = cliente });
             }
             catch (ArgumentException ex)
             {
@@ -71,7 +110,7 @@ namespace GestaoClinica.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "Erro ao salvar cliente.", error = ex.Message });
+                return StatusCode(500, new { message = "Erro ao criar cliente.", error = ex.Message });
             }
         }
 
@@ -83,7 +122,7 @@ namespace GestaoClinica.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(new { message = "Dados inválidos.", errors = ModelState.Values.SelectMany(v => v.Errors) });
             }
 
             try
@@ -92,7 +131,7 @@ namespace GestaoClinica.Controllers
                 cliente.IdCliente = id;
 
                 await _clienteService.AtualizarAsync(cliente);
-                return NoContent();
+                return Ok(new { message = $"Cliente com ID {id} atualizado com sucesso!" });
             }
             catch (KeyNotFoundException ex)
             {
@@ -118,7 +157,7 @@ namespace GestaoClinica.Controllers
             try
             {
                 await _clienteService.ExcluirAsync(id);
-                return NoContent();
+                return Ok(new { message = $"Cliente com ID {id} excluído com sucesso!" });
             }
             catch (KeyNotFoundException)
             {
@@ -126,7 +165,7 @@ namespace GestaoClinica.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "Erro ao excluir.", error = ex.Message });
+                return StatusCode(500, new { message = "Erro ao excluir cliente.", error = ex.Message });
             }
         }
     }

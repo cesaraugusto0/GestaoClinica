@@ -40,7 +40,9 @@ namespace GestaoClinica.Repository.Interfaces
 
         public async Task<IEnumerable<Cliente>> ListarClienteAsync()
         {
-            return await _context.Clientes.ToListAsync();
+            return await _context.Clientes
+        .Include(c => c.Endereco)
+        .ToListAsync();
         }
 
     }
