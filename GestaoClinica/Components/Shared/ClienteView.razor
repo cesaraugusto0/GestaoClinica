@@ -1,0 +1,35 @@
+﻿@using GestaoClinica.DTO
+
+<MudCard>
+    <MudCardContent>
+        <MudTypography Variant="Variant.h6" Style="margin-bottom: 16px;">
+            Detalhes do Cliente
+        </MudTypography>
+
+        <MudGrid>
+            <MudItem xs="12">
+                <MudText Typo="Typo.body1"><strong>Nome:</strong> @Cliente.Nome</MudText>
+            </MudItem>
+            <!-- Outros campos aqui -->
+        </MudGrid>
+    </MudCardContent>
+
+    <MudCardActions>
+        <MudButton @onclick="OnClose" Color="Color.Secondary" Variant="Variant.Outlined">
+            Fechar
+        </MudButton>
+    </MudCardActions>
+</MudCard>
+
+@code {
+    [Parameter]
+    public ClienteDTO Cliente { get; set; } = new ClienteDTO();
+
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+
+    private void Close()
+    {
+        OnClose.InvokeAsync();
+    }
+}

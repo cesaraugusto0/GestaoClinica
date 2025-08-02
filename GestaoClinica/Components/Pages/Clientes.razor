@@ -1,0 +1,266 @@
+﻿@page "/clientes"
+@using GestaoClinica.DTO
+@using GestaoClinica.Data.Services.Interfaces
+@inject IClienteDTOService ClienteService
+@inject ISnackbar Snackbar
+@inject IJSRuntime JSRuntime
+
+<MudPaper Elevation="1" Style="padding: 16px; margin-bottom: 16px;">
+    <MudGrid>
+        <MudItem xs="12" sm="8" md="6">
+            <MudTextField @bind-Value="searchTerm" 
+                          Label="Buscar clientes..." 
+                          Adornment="Adornment.Start" 
+                          AdornmentIcon="@Icons.Material.Filled.Search"
+                          Variant="Variant.Outlined" 
+                          DebounceInterval="300"
+                          @oninput="OnSearchChanged" />
+        </MudItem>
+        <MudItem xs="12" sm="4" md="6">
+            <div style="display: flex; justify-content: flex-end; gap: 8px;">
+                <MudButton Color="Color.Primary" 
+                           Variant="Variant.Filled" 
+                           OnClick="OpenCreateModal"
+                           StartIcon="@Icons.Material.Filled.Add">
+                    Novo Cliente
+                </MudButton>
+            </div>
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+<MudPaper Elevation="1">
+    <MudTable T="ClienteDTO" 
+              Items="clientes" 
+              Hover="true" 
+              SortLabel="Ordenar por" 
+              Dense="@dense"
+              Striped="true"
+              @ref="tableInstance">
+        <ToolBarContent>
+            <MudText>Mostrando @clientes.Count() clientes</MudText>
+            <MudSpacer />
+            <MudSwitch @bind-Checked="dense" Color="Color.Secondary" T="bool">Modo compacto</MudSwitch>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh><MudTableSortLabel SortBy="new Func<ClienteDTO, object>(x => x.Nome)">Nome</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<ClienteDTO, object>(x => x.CPF)">CPF</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<ClienteDTO, object>(x => x.Telefone)">Telefone</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<ClienteDTO, object>(x => x.Email)">Email</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<ClienteDTO, object>(x => x.Ativo)">Status</MudTableSortLabel></MudTh>
+            <MudTh>Ações</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Nome">@context.Nome</MudTd>
+            <MudTd DataLabel="CPF">@context.CPF</MudTd>
+            <MudTd DataLabel="Telefone">@context.Telefone</MudTd>
+            <MudTd DataLabel="Email">@context.Email</MudTd>
+            <MudTd DataLabel="Status">
+                <MudChip Size="Size.Small" 
+                         Color="@(context.Ativo ? Color.Success : Color.Error)" 
+                         Text="@context.Status" 
+                         T="string" />
+            </MudTd>
+            <MudTd DataLabel="Ações">
+                <MudButton Size="Size.Small" 
+                           Variant="Variant.Text" 
+                           Color="Color.Info" 
+                           StartIcon="@Icons.Material.Filled.Visibility"
+                           OnClick="@(() => OpenViewModal(context))">
+                    Ver
+                </MudButton>
+                <MudButton Size="Size.Small" 
+                           Variant="Variant.Text" 
+                           Color="Color.Primary" 
+                           StartIcon="@Icons.Material.Filled.Edit"
+                           OnClick="@(() => OpenEditModal(context))">
+                    Editar
+                </MudButton>
+                <MudButton Size="Size.Small" 
+                           Variant="Variant.Text" 
+                           Color="Color.Error" 
+                           StartIcon="@Icons.Material.Filled.Delete"
+                           OnClick="@(() => ConfirmDelete(context.IdCliente))">
+                    Excluir
+                </MudButton>
+            </MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager PageSizeOptions="new int[]{10, 25, 50, 100}" />
+        </PagerContent>
+    </MudTable>
+</MudPaper>
+
+<!-- Diálogos usando variáveis booleanas -->
+<MudDialog IsVisible="@showCreateDialog" OnClose="@CloseCreateModal" MaxWidth="MaxWidth.Large">
+    <DialogContent>
+        <ClienteForm Cliente="newCliente" OnSubmit="HandleCreate" OnCancel="CloseCreateModal" />
+    </DialogContent>
+</MudDialog>
+
+<MudDialog IsVisible="@showEditDialog" OnClose="@CloseEditModal" MaxWidth="MaxWidth.Large">
+    <DialogContent>
+        <ClienteForm Cliente="selectedCliente" OnSubmit="HandleUpdate" OnCancel="CloseEditModal" />
+    </DialogContent>
+</MudDialog>
+
+<MudDialog IsVisible="@showViewDialog" OnClose="@CloseViewModal" MaxWidth="MaxWidth.Medium">
+    <DialogContent>
+        <ClienteView Cliente="selectedCliente" OnClose="CloseViewModal" />
+    </DialogContent>
+</MudDialog>
+
+@code {
+    private IEnumerable<ClienteDTO> clientes = new List<ClienteDTO>();
+    private IEnumerable<ClienteDTO> allClientes = new List<ClienteDTO>();
+    private string searchTerm = string.Empty;
+    private bool dense = false;
+    private ClienteDTO newCliente = new ClienteDTO { Endereco = new EnderecoDTO() };
+    private ClienteDTO selectedCliente = new ClienteDTO();
+    private MudTable<ClienteDTO> tableInstance = null!;
+
+    // Variáveis de controle para visibilidade dos diálogos
+    private bool showCreateDialog = false;
+    private bool showEditDialog = false;
+    private bool showViewDialog = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadClientes();
+    }
+
+    private async Task LoadClientes()
+    {
+        try
+        {
+            allClientes = await ClienteService.GetAllClientesAsync();
+            clientes = allClientes;
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Erro ao carregar clientes: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task OnSearchChanged(ChangeEventArgs args)
+    {
+        searchTerm = args.Value?.ToString() ?? string.Empty;
+        
+        if (string.IsNullOrWhiteSpace(searchTerm))
+        {
+            clientes = allClientes;
+        }
+        else
+        {
+            clientes = await ClienteService.SearchClientesAsync(searchTerm);
+        }
+        
+        StateHasChanged();
+    }
+
+    private void OpenCreateModal()
+    {
+        newCliente = new ClienteDTO { Endereco = new EnderecoDTO() };
+        showCreateDialog = true;
+    }
+
+    private void CloseCreateModal()
+    {
+        showCreateDialog = false;
+    }
+
+    private async Task HandleCreate()
+    {
+        try
+        {
+            await ClienteService.CreateClienteAsync(newCliente);
+            await LoadClientes();
+            Snackbar.Add("Cliente criado com sucesso!", Severity.Success);
+            CloseCreateModal();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Erro ao criar cliente: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private void OpenEditModal(ClienteDTO cliente)
+    {
+        selectedCliente = new ClienteDTO
+        {
+            IdCliente = cliente.IdCliente,
+            Nome = cliente.Nome,
+            CPF = cliente.CPF,
+            DataNascimento = cliente.DataNascimento,
+            Telefone = cliente.Telefone,
+            Email = cliente.Email,
+            Observacoes = cliente.Observacoes,
+            Ativo = cliente.Ativo,
+            EnderecoId = cliente.EnderecoId,
+            Endereco = cliente.Endereco != null ? new EnderecoDTO
+            {
+                Logradouro = cliente.Endereco.Logradouro,
+                Numero = cliente.Endereco.Numero,
+                Complemento = cliente.Endereco.Complemento,
+                Cidade = cliente.Endereco.Cidade,
+                Uf = cliente.Endereco.Uf,
+                Cep = cliente.Endereco.Cep
+            } : new EnderecoDTO()
+        };
+        showEditDialog = true;
+    }
+
+    private void CloseEditModal()
+    {
+        showEditDialog = false;
+    }
+
+    private async Task HandleUpdate()
+    {
+        try
+        {
+            await ClienteService.UpdateClienteAsync(selectedCliente);
+            await LoadClientes();
+            Snackbar.Add("Cliente atualizado com sucesso!", Severity.Success);
+            CloseEditModal();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Erro ao atualizar cliente: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private void OpenViewModal(ClienteDTO cliente)
+    {
+        selectedCliente = cliente;
+        showViewDialog = true;
+    }
+
+    private void CloseViewModal()
+    {
+        showViewDialog = false;
+    }
+
+    private async Task ConfirmDelete(int id)
+    {
+        var cliente = clientes.FirstOrDefault(c => c.IdCliente == id);
+        if (cliente == null) return;
+
+        bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", 
+            $"Tem certeza que deseja excluir o cliente {cliente.Nome}?");
+
+        if (confirmed)
+        {
+            try
+            {
+                await ClienteService.DeleteClienteAsync(id);
+                await LoadClientes();
+                Snackbar.Add("Cliente excluído com sucesso!", Severity.Success);
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Erro ao excluir cliente: {ex.Message}", Severity.Error);
+            }
+        }
+    }
+}

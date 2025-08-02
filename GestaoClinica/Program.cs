@@ -2,12 +2,17 @@ using GestaoClinica.Components;
 using GestaoClinica.Data.Context;
 using GestaoClinica.Repository.Interfaces;
 using GestaoClinica.Repository;
-using GestaoClinica.Services.Interfaces;
-using GestaoClinica.Services.Implementations;
+using GestaoClinica.Data.Services.Interfaces;
+using GestaoClinica.Data.Services.Implementations;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.AddRazorPages();
+builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents();
 
 // --- Banco de dados ---
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
@@ -25,44 +30,36 @@ builder.Services.AddDbContext<SQLServerDbContext>(options =>
 
 // --- Serviços (Repository e Service) ---
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
-builder.Services.AddScoped<IClienteService, ClienteService>();
-builder.Services.AddScoped<IFuncionarioRepository, FuncionarioRepository>();
-builder.Services.AddScoped<IFuncionarioService, FuncionarioService>();
+builder.Services.AddScoped<IClienteDTOService, MockClienteDTOService>();
 
-// --- Blazor e MudBlazor ---
-builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
-
-builder.Services.AddMudServices(); // Apenas uma vez
-
-// --- Adicione isso: Suporte a Controllers (para a API) ---
-builder.Services.AddControllers();
-
-// --- Swagger (para testar a API) ---
-builder.Services.AddEndpointsApiExplorer();
-
+builder.Services.AddMudServices(config =>
+{
+    config.SnackbarConfiguration.PositionClass = MudBlazor.Defaults.Classes.Position.BottomRight;
+    config.SnackbarConfiguration.PreventDuplicates = false;
+    config.SnackbarConfiguration.NewestOnTop = false;
+    config.SnackbarConfiguration.ShowCloseIcon = true;
+    config.SnackbarConfiguration.VisibleStateDuration = 5000;
+    config.SnackbarConfiguration.HideTransitionDuration = 500;
+    config.SnackbarConfiguration.ShowTransitionDuration = 500;
+    config.SnackbarConfiguration.SnackbarVariant = MudBlazor.Variant.Filled;
+});
 
 var app = builder.Build();
 
+// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error", createScopeForErrors: true);
+    app.UseExceptionHandler("/Error");
     app.UseHsts();
-}
-else
-{
-
 }
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
 
-// --- Mapeie os controllers (API) ---
-app.MapControllers(); // ← Essencial para a API
-
-// --- Mapeie o Blazor ---
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
+
+app.MapFallbackToFile("/_Host.cshtml"); // ← Alterado para MapFallbackToFile
 
 app.Run();

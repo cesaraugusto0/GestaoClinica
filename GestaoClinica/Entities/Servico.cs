@@ -9,7 +9,7 @@
         public int DuracaoEstimada { get; set; }
         public bool Ativo { get; set; }
         public DateTime DataCriacao { get; set; } = DateTime.UtcNow;
-        public DateTime UltimaAtualizacao { get; set; }
+        public DateTime UltimaAtualizacao { get; set; } = DateTime.UtcNow;
 
         public int CategoriaId { get; set; }
         public Categoria Categoria { get; set; }

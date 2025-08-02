@@ -1,0 +1,72 @@
+﻿@using GestaoClinica.DTO
+@using Microsoft.AspNetCore.Components.Forms
+
+<MudForm @ref="form" @onsubmit="HandleSubmit">
+    <MudTabs Elevation="2" Rounded="true" @ref="tabs">
+        <MudTabPanel Text="Dados Pessoais">
+            <MudGrid>
+                <MudItem xs="12" sm="6">
+                    <MudTextField @bind-Value="Cliente.Nome"
+                                  Label="Nome *"
+                                  Required="true"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense" />
+                </MudItem>
+                <!-- Outros campos aqui -->
+            </MudGrid>
+        </MudTabPanel>
+        <!-- Outros tab panels -->
+    </MudTabs>
+
+    <MudDivider />
+    <MudCardActions>
+        <MudButton Type="submit" Color="Color.Primary" Variant="Variant.Filled">
+            Salvar
+        </MudButton>
+        <MudButton @onclick="OnCancel" Color="Color.Secondary" Variant="Variant.Outlined">
+            Cancelar
+        </MudButton>
+    </MudCardActions>
+</MudForm>
+
+@code {
+    [Parameter]
+    public ClienteDTO Cliente { get; set; } = new ClienteDTO
+        {
+            Endereco = new EnderecoDTO()
+        };
+
+    [Parameter]
+    public EventCallback OnSubmit { get; set; }
+
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+
+    private MudForm form = null!;
+    private MudTabs tabs = null!;
+
+    protected override void OnInitialized()
+    {
+        if (Cliente.Endereco == null)
+        {
+            Cliente.Endereco = new EnderecoDTO();
+        }
+    }
+
+    private async Task HandleSubmit()
+    {
+        if (form != null)
+        {
+            form.Validate();
+            if (form.IsValid)
+            {
+                await OnSubmit.InvokeAsync();
+            }
+        }
+    }
+
+    private void Cancel()
+    {
+        OnCancel.InvokeAsync();
+    }
+}

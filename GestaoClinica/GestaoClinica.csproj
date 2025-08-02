@@ -6,6 +6,25 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Components\NovaPasta1\**" />
+    <Compile Remove="Components\NovaPasta2\**" />
+    <Compile Remove="Components\NovaPasta\**" />
+    <Content Remove="Components\NovaPasta1\**" />
+    <Content Remove="Components\NovaPasta2\**" />
+    <Content Remove="Components\NovaPasta\**" />
+    <EmbeddedResource Remove="Components\NovaPasta1\**" />
+    <EmbeddedResource Remove="Components\NovaPasta2\**" />
+    <EmbeddedResource Remove="Components\NovaPasta\**" />
+    <None Remove="Components\NovaPasta1\**" />
+    <None Remove="Components\NovaPasta2\**" />
+    <None Remove="Components\NovaPasta\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Components\Shared\EnderecoDTO.cs" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.3.0" />
@@ -20,5 +39,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="MudBlazor" Version="8.*" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Folder Include="Components\Pages\Clientes\" />
   </ItemGroup>
 </Project>

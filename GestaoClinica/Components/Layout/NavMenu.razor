@@ -1,7 +1,50 @@
-﻿
-<MudNavMenu>
-    <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
+﻿<div class="nav-menu">
+    <MudList T="object">
+        <MudListItem Icon="@Icons.Material.Filled.Home" Text="Dashboard" Href="/" />
+        <MudListItem Icon="@Icons.Material.Filled.People" Text="Pacientes" Href="/clientes" />
+        <MudListItem Icon="@Icons.Material.Filled.Event" Text="Agendamentos" Href="/agendamentos" />
+        <MudListItem Icon="@Icons.Material.Filled.LocalHospital" Text="Serviços" Href="/servicos" />
+        <MudListItem Icon="@Icons.Material.Filled.Person" Text="Funcionários" Href="/funcionarios" />
+        <MudListItem Icon="@Icons.Material.Filled.CalendarToday" Text="Calendário" Href="/calendario" />
+        <MudListItem Icon="@Icons.Material.Filled.Assessment" Text="Relatórios" Href="/relatorios" />
+        <MudListItem Icon="@Icons.Material.Filled.Settings" Text="Configurações" Href="/configuracoes" />
+    </MudList>
 
-</MudNavMenu>
+    <MudDivider />
 
+    <MudList T="object">
+        <MudListItem Icon="@Icons.Material.Filled.Help" Text="Ajuda" Href="/ajuda" />
+        <MudListItem Icon="@Icons.Material.Filled.Info" Text="Sobre" Href="/sobre" />
+    </MudList>
+</div>
 
+<style>
+    .nav-menu {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    
+    .nav-menu .mud-list {
+        flex: 1;
+    }
+    
+    .nav-menu .mud-list-item {
+        border-radius: 0 24px 24px 0;
+        margin-right: 12px;
+        transition: all 0.3s ease;
+    }
+    
+    .nav-menu .mud-list-item:hover {
+        background-color: var(--mud-palette-action-default-hover);
+    }
+    
+    .nav-menu .mud-list-item.active {
+        background-color: var(--mud-palette-primary);
+        color: var(--mud-palette-primary-text);
+    }
+    
+    .nav-menu .mud-list-item.active .mud-icon-root {
+        color: var(--mud-palette-primary-text);
+    }
+</style>
