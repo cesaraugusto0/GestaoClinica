@@ -1,7 +1,9 @@
 ﻿
 using GestaoClinica.Entities;
+using GestaoClinica.Repository.Implementation;
 using GestaoClinica.Repository.Interfaces;
 using GestaoClinica.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace GestaoClinica.Services
 {
@@ -33,7 +35,19 @@ namespace GestaoClinica.Services
 
        public async Task ExcluirAsync(int idCategoria)
         {
+            var categoria = _categoriaRepository.ObterCategoriaPorIdAsync(idCategoria);
             await _categoriaRepository.ExcluirAsync(idCategoria);
+        }
+
+        public async Task<Categoria> ObterCategoriaPorIdAsync(int id)
+        {
+            var categoria = await _categoriaRepository.ObterCategoriaPorIdAsync(id);
+
+            if (categoria == null)
+            {
+                throw new KeyNotFoundException($"O categoria com id {id} não foi localizado");
+            }
+            return categoria;
         }
 
         async Task<IEnumerable<Categoria>> ICategoriaService.ListarCategoriasAsync()

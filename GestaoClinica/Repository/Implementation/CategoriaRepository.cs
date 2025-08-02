@@ -28,13 +28,20 @@ namespace GestaoClinica.Repository.Implementation
         }
 
         public async Task ExcluirAsync(int idCategoria)
-        {
-            var categoriaExistente = await _context.Categoria.FindAsync(idCategoria);
-            if (categoriaExistente != null)
-            {
-                _context.Categoria.Remove(categoriaExistente);
-            }
+        {            
+                var categoriaExistente = await _context.Categoria.FindAsync(idCategoria);
+                
+                if (categoriaExistente != null)
+                {
+                     _context.Categoria.Remove(categoriaExistente);        
+                }           
         }
+
+        public async Task<Categoria> ObterCategoriaPorIdAsync(int id)
+        {
+            return await _context.Categoria.FindAsync(id);
+        }
+      
 
         async Task<IEnumerable<Categoria>> ICategoriaRepository.ListarCategoriasAsync()
         {

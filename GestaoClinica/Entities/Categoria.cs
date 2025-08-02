@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using GestaoClinica.Entities.GestaoClinica.Entities;
 
 namespace GestaoClinica.Entities
 {
@@ -13,7 +14,7 @@ namespace GestaoClinica.Entities
         public DateTime DataCriacao { get; set; } = DateTime.UtcNow;
         public DateTime UltimaAtualizacao { get; set; } = DateTime.UtcNow;
 
-       // public ICollection<Servico> Servicos { get; set; } = new List<Servico>();
+        public ICollection<Servico> Servicos { get; set; } = new List<Servico>();
 
         public Categoria()
         {
