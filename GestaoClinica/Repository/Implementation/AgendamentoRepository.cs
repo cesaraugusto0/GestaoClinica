@@ -27,7 +27,7 @@ namespace GestaoClinica.Repository.Implementation
             return await GetAgendamentosComIncludes().ToListAsync();
         }
 
-        public async Task<Agendamento> ObterAgendamentoPorIdAsync(int id)
+        public async Task<Agendamento?> ObterAgendamentoPorIdAsync(int id)
         {
             return await GetAgendamentosComIncludes().FirstOrDefaultAsync(a => a.IdAgendamento == id);
         }
