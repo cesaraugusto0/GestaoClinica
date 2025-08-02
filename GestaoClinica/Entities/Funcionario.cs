@@ -14,6 +14,9 @@ namespace GestaoClinica.Entities
         public bool Ativo { get; set; }
         public DateTime DataCriacao { get; set; } = DateTime.UtcNow;
         public DateTime UltimaAtualizacao { get; set; } = DateTime.UtcNow;
+        
+        public int? EnderecoId { get; set; }
+        public Endereco Endereco { get; set; }
 
         // public ICollection<Agendamento> Agendamentos { get; set; } = new List<Agendamento>();
 

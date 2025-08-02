@@ -20,7 +20,9 @@ namespace GestaoClinica.Repository.Interfaces
 
         public async Task<Funcionario> ObterFuncionarioPorIdAsync(int id)
         {
-            return await _context.Funcionarios.FindAsync(id);
+            return await _context.Funcionarios
+                .Include(f => f.Endereco)
+                .FirstOrDefaultAsync(f => f.IdFuncionario == id);;
         }
         public async Task AtualizarAsync(Funcionario funcionario)
         {
@@ -40,7 +42,9 @@ namespace GestaoClinica.Repository.Interfaces
 
         public async Task<IEnumerable<Funcionario>> ListarFuncionarioAsync()
         {
-            return await _context.Funcionarios.ToListAsync();
+            return await _context.Funcionarios
+                .Include(f => f.Endereco)
+                .ToListAsync();
         }
 
     }
