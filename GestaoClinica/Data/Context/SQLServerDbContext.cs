@@ -12,7 +12,7 @@ namespace GestaoClinica.Data.Context
         // public DbSet<Categoria> categorias { get; set; }
         public DbSet<Cliente> Clientes { get; set;}
         // public DbSet<Endereco> enderecos { get; set; }
-        // public DbSet<Funcionario> funcionarios { get; set; }
+        public DbSet<Funcionario> Funcionarios { get; set; }
         //public DbSet<Pessoa> pessoas { get; set; }
         // public DbSet<Servico> servicos { get; set; }
         // public DbSet<StatusAgenda> statusAgendas { get; set; }
