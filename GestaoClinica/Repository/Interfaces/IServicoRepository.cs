@@ -1,8 +1,8 @@
 ﻿using GestaoClinica.Entities;
 
-namespace GestaoClinica.Services.Interfaces
+namespace GestaoClinica.Repository.Interfaces
 {
-    public interface IServicoService
+    public interface IServicoRepository
     {
         Task<IEnumerable<Servico>> ListarServicoAsync();
         Task<Servico> ObterServicoPorIdAsync(int id);

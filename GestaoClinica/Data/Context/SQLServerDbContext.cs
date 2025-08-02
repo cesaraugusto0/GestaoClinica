@@ -16,7 +16,7 @@ namespace GestaoClinica.Data.Context
         // public DbSet<Endereco> enderecos { get; set; }
         public DbSet<Funcionario> Funcionarios { get; set; }
         //public DbSet<Pessoa> pessoas { get; set; }
-        // public DbSet<Servico> servicos { get; set; }
+         public DbSet<Servico> Servicos { get; set; }
         // public DbSet<StatusAgenda> statusAgendas { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -18,10 +18,7 @@ namespace GestaoClinica.Repository.Interfaces
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Cliente> ObterClientePorIdAsync(int id)
-        {
-            return await _context.Clientes.FindAsync(id);
-        }
+
         public async Task AtualizarAsync(Cliente cliente)
         {
             _context.Clientes.Update(cliente);
@@ -45,5 +42,9 @@ namespace GestaoClinica.Repository.Interfaces
         .ToListAsync();
         }
 
+        public async Task<Cliente> ObterClientePorIdAsync(int id)
+        {
+            return await _context.Clientes.FindAsync(id);
+        }
     }
 }
