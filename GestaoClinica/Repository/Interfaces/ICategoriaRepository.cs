@@ -1,8 +1,8 @@
 ﻿using GestaoClinica.Entities;
 
-namespace GestaoClinica.Services.Interfaces
+namespace GestaoClinica.Repository.Interfaces
 {
-    public interface ICategoriaService
+    public interface ICategoriaRepository
     {
         Task<IEnumerable<Categoria>> ListarCategoriasAsync();
         Task AdicionarAsync(Categoria categoria);

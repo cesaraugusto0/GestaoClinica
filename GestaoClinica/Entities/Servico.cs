@@ -1,5 +1,6 @@
 ﻿namespace GestaoClinica.Entities
-{
+
+    {
     public class Servico
     {
         public int IdServico { get; set; }

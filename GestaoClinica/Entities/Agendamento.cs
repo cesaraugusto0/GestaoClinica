@@ -1,7 +1,14 @@
-﻿namespace GestaoClinica.Entities
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace GestaoClinica.Entities
 {
+    [Table("Agendamento")]
+
     public class Agendamento
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int IdAgendamento { get; set; }
         public DateTime DataHoraInicio { get; set; }
         public int DuracaoAtendimento { get; set; }
