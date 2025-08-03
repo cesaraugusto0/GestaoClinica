@@ -6,7 +6,7 @@
         }
     },
     "ConnectionStrings": {
-        "DefaultConnection": "Server=;Database=dbGestaoClinica;User Id=sa;Password=;TrustServerCertificate=True;"
+        "DefaultConnection": "Server=localhost;Database=nome_do_banco;User Id=usuario;Password=senha;"
     },
     "AllowedHosts": "*",
     "DetailedErrors": true
