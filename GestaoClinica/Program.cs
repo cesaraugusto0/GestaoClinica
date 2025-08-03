@@ -14,8 +14,7 @@ using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 
 // --- Banco de dados ---
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? "Server=localhost;Database=GestaoClinicaDb;User Id=sa;Password=yourStrong(!)Password;TrustServerCertificate=True";
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<SQLServerDbContext>(options =>
 {
@@ -46,8 +45,6 @@ builder.Services.AddScoped<IServicoService, ServicoService>();
 builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 
-
-
 // --- Blazor e MudBlazor ---
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
@@ -59,7 +56,7 @@ builder.Services.AddControllers();
 
 // --- Swagger (para testar a API) ---
 builder.Services.AddEndpointsApiExplorer();
-
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
@@ -72,7 +69,8 @@ else
 {
 
 }
-
+app.UseSwagger();
+app.UseSwaggerUI();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
