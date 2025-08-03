@@ -6,7 +6,7 @@
         }
     },
     "ConnectionStrings": {
-        "DefaultConnection": "Server=AN0101712085933\\SQLEXPRESS2024;Database=dbGestaoClinica;User Id=sa;Password=ceub123456;TrustServerCertificate=True;"
+        "DefaultConnection": "Server=;Database=dbGestaoClinica;User Id=sa;Password=;TrustServerCertificate=True;"
     },
     "AllowedHosts": "*",
     "DetailedErrors": true
