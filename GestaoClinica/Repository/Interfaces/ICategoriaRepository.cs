@@ -1,14 +1,14 @@
 ﻿using GestaoClinica.Entities;
 
-namespace GestaoClinica.Services.Interfaces
+namespace GestaoClinica.Repository.Interfaces
 {
-    public interface ICategoriaService
+    public interface ICategoriaRepository
     {
         Task<IEnumerable<Categoria>> ListarCategoriasAsync();
-        Task<Categoria> ObterCategoriaPorIdAsync(int id);
-
         Task AdicionarAsync(Categoria categoria);
         Task AtualizarAsync(Categoria categoria);
         Task ExcluirAsync(int idCategoria);
+        Task<Categoria> ObterCategoriaPorIdAsync(int id);
+
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using GestaoClinica.Entities.GestaoClinica.Entities;
 
 namespace GestaoClinica.Entities
 {

@@ -7,6 +7,8 @@ using GestaoClinica.Services.Implementations;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
 using GestaoClinica.Repository.Implementation;
+using GestaoClinica.Entities;
+using GestaoClinica.Services;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -41,6 +43,8 @@ builder.Services.AddScoped<IAgendamentoRepository, AgendamentoRepository>();
 builder.Services.AddScoped<IAgendamentoService, AgendamentoService>();
 builder.Services.AddScoped<IServicoRepository, ServicoRepository>();
 builder.Services.AddScoped<IServicoService, ServicoService>();
+builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
+builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 
 
 

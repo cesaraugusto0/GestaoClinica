@@ -73,3 +73,5 @@ clientes -> Cadastro de clientes, histórico e vinculação com Pessoa.
  Sempre atualize sua branch local antes de trocar:
 
     git pull origin nome_da_branch
+
+teste de commit
