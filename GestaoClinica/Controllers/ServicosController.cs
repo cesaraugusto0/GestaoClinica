@@ -78,7 +78,7 @@ namespace GestaoClinica.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> PostCliente([FromBody] Servico servico)
+        public async Task<ActionResult> PostServico([FromBody] Servico servico)
         {
             if (!ModelState.IsValid)
             {

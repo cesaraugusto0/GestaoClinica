@@ -45,7 +45,9 @@ namespace GestaoClinica.Repository.Implementation
 
         public async Task<Servico> ObterServicoPorIdAsync(int id)
         {
-            return await _context.Servicos.FindAsync(id);
+            return await _context.Servicos
+.Include(c => c.Categoria)
+.FirstOrDefaultAsync(c => c.IdServico == id);
         }
     }
 }

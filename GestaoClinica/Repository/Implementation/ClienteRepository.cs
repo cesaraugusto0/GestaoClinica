@@ -44,7 +44,9 @@ namespace GestaoClinica.Repository.Interfaces
 
         public async Task<Cliente> ObterClientePorIdAsync(int id)
         {
-            return await _context.Clientes.FindAsync(id);
+            return await _context.Clientes
+        .Include(c => c.Endereco)
+        .FirstOrDefaultAsync(c => c.IdCliente == id);
         }
     }
 }
