@@ -59,7 +59,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 // --- Serviços (Repository e Service) ---
-builder.Services.AddScoped<IClienteService, MockClienteService>();
+// builder.Services.AddScoped<IClienteService, MockClienteService>();
 
 builder.Services.AddMudServices(config =>
 {

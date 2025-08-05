@@ -1,4 +1,5 @@
-﻿using GestaoClinica.Entities;
+﻿using GestaoClinica.Converters;
+using GestaoClinica.Entities;
 using GestaoClinica.Repository.Interfaces;
 using GestaoClinica.Services.Interfaces;
 using GestaoClinica.ViewModel;
@@ -19,7 +20,7 @@ namespace GestaoClinica.Services.Implementations
         
         public async Task AdicionarAsync(ClienteViewModel clienteViewModel)
         {
-            var cliente = ToEntity(clienteViewModel);
+            var cliente = ClienteConverter.ToEntity(clienteViewModel);
             if (string.IsNullOrEmpty(cliente.Nome))
             {
                 throw new ArgumentException("O nome é obrigatório!");
@@ -59,10 +60,7 @@ namespace GestaoClinica.Services.Implementations
                 throw new Exception("Ocorreu um erro inesperado ao salvar o cliente.", ex);
             }
         }
-
-
-
-
+        
         public async Task AtualizarAsync(ClienteViewModel clienteViewModel)
         {
             var cliente = await _clienteRepository.ObterClientePorIdAsync(clienteViewModel.IdCliente);
@@ -106,7 +104,7 @@ namespace GestaoClinica.Services.Implementations
         public async Task<IEnumerable<ClienteViewModel>> ListarClienteAsync()
         {
             var clientes = await _clienteRepository.ListarClienteAsync();
-            return clientes.Select(ToViewModel);
+            return clientes.Select(ClienteConverter.ToViewModel);
         }
 
         public async Task<ClienteViewModel?> ObterClientePorIdAsync(int id)
@@ -116,7 +114,7 @@ namespace GestaoClinica.Services.Implementations
             {
                 throw new KeyNotFoundException($"Cliente com ID {id} não encontrado.");
             }
-            return ToViewModel(cliente);
+            return ClienteConverter.ToViewModel(cliente);
         }
 
         public async Task<IEnumerable<ClienteViewModel>> ProcurarClientesAsync(string pesquisa)
@@ -124,7 +122,7 @@ namespace GestaoClinica.Services.Implementations
             var clientes = await _clienteRepository.ListarClienteAsync();
 
             if (string.IsNullOrWhiteSpace(pesquisa))
-                return clientes.Select(ToViewModel);
+                return clientes.Select(ClienteConverter.ToViewModel);
 
             pesquisa = pesquisa.ToLower();
             var pesquisaFiltrada = clientes.Where(c =>
@@ -134,66 +132,7 @@ namespace GestaoClinica.Services.Implementations
                 (c.Telefone?.Contains(pesquisa) ?? false)
             );
 
-            return pesquisaFiltrada.Select(ToViewModel);
+            return pesquisaFiltrada.Select(ClienteConverter.ToViewModel);
         }
-
-        // Métodos de mapeamento
-        private ClienteViewModel ToViewModel(Cliente cliente)
-        {
-            return new ClienteViewModel
-            {
-                IdCliente = cliente.IdCliente,
-                Nome = cliente.Nome,
-                CPF = cliente.CPF,
-                DataNascimento = cliente.DataNascimento,
-                Telefone = cliente.Telefone,
-                Email = cliente.Email,
-                Observacoes = cliente.Observacoes,
-                Ativo = cliente.Ativo,
-                EnderecoId = cliente.EnderecoId,
-                Endereco = cliente.Endereco != null ? new EnderecoViewModel
-                {
-                    Logradouro = cliente.Endereco.Logradouro,
-                    Numero = cliente.Endereco.Numero,
-                    Complemento = cliente.Endereco.Complemento,
-                    Cidade = cliente.Endereco.Cidade,
-                    Uf = cliente.Endereco.Uf,
-                    Cep = cliente.Endereco.Cep
-                } : null
-            };
-        }
-
-        private Cliente ToEntity(ClienteViewModel clienteViewModel)
-        {
-            var cliente = new Cliente
-            {
-                IdCliente = clienteViewModel.IdCliente,
-                Nome = clienteViewModel.Nome,
-                CPF = clienteViewModel.CPF,
-                DataNascimento = clienteViewModel.DataNascimento,
-                Telefone = clienteViewModel.Telefone,
-                Email = clienteViewModel.Email,
-                Observacoes = clienteViewModel.Observacoes,
-                Ativo = clienteViewModel.Ativo,
-                EnderecoId = clienteViewModel.EnderecoId
-            };
-
-            // Se houver endereço no ViewModel, cria o objeto Endereco
-            if (clienteViewModel.Endereco != null)
-            {
-                cliente.Endereco = new Endereco
-                {
-                    Logradouro = clienteViewModel.Endereco.Logradouro,
-                    Numero = clienteViewModel.Endereco.Numero,
-                    Complemento = clienteViewModel.Endereco.Complemento,
-                    Cidade = clienteViewModel.Endereco.Cidade,
-                    Uf = clienteViewModel.Endereco.Uf,
-                    Cep = clienteViewModel.Endereco.Cep
-                };
-            }
-
-            return cliente;
-        }
-
     }
 }

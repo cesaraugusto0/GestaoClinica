@@ -1,9 +1,9 @@
-/*
 // Controllers/ClientesController.cs
 using Microsoft.AspNetCore.Mvc;
 using GestaoClinica.Services.Interfaces;
 using GestaoClinica.Entities;
 using System.Net.Mime;
+using GestaoClinica.Converters;
 
 namespace GestaoClinica.Controllers
 {
@@ -24,48 +24,45 @@ namespace GestaoClinica.Controllers
         /// </summary>
         // Em ClientesController.cs - Método GetClientes()
 
-[HttpGet]
-public async Task<ActionResult> GetClientes()
-{
-    try
-    {
-        var clientes = await _clienteService.ListarClienteAsync();
-
-        var resultado = clientes.Select(c => new
+        [HttpGet]
+        public async Task<ActionResult> GetClientes()
         {
-            c.IdCliente,
-            c.Observacoes,
-            c.Ativo,
-            c.Nome,
-            c.Telefone,
-            c.Email,
-            CPF = c.CPF, // Note: a propriedade é CPF (com F), não cpf
-            c.DataNascimento,
-            c.DataCriacao,
-            c.UltimaAtualizacao,
-            Endereco = c.Endereco == null ? null : new
+            try
             {
-                Id = c.Endereco.IdEndereco,
-                c.Endereco.Logradouro,
-                c.Endereco.Numero,
-                c.Endereco.Complemento,
-                c.Endereco.Cidade,
-                c.Endereco.Uf,
-                c.Endereco.Cep
-            }
-        }).ToList();
+                var clientes = await _clienteService.ListarClienteAsync();
 
-        return Ok(new
-        {
-            message = "Clientes listados com sucesso!",
-            data = resultado
-        });
-    }
-    catch (Exception ex)
-    {
-        return StatusCode(500, new { message = "Erro ao listar clientes.", error = ex.Message });
-    }
-}
+                var resultado = clientes.Select(c => new
+                {
+                    c.IdCliente,
+                    c.Observacoes,
+                    c.Ativo,
+                    c.Nome,
+                    c.Telefone,
+                    c.Email,
+                    CPF = c.CPF, // Note: a propriedade é CPF (com F), não cpf
+                    c.DataNascimento,
+                    Endereco = c.Endereco == null ? null : new
+                    {
+                        c.Endereco.Logradouro,
+                        c.Endereco.Numero,
+                        c.Endereco.Complemento,
+                        c.Endereco.Cidade,
+                        c.Endereco.Uf,
+                        c.Endereco.Cep
+                    }
+                }).ToList();
+
+                return Ok(new
+                {
+                    message = "Clientes listados com sucesso!",
+                    data = resultado
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Erro ao listar clientes.", error = ex.Message });
+            }
+        }
 
         /// <summary>
         /// Busca cliente por ID
@@ -101,7 +98,7 @@ public async Task<ActionResult> GetClientes()
 
             try
             {
-                await _clienteService.AdicionarAsync(cliente);
+                await _clienteService.AdicionarAsync(ClienteConverter.ToViewModel(cliente));
                 return CreatedAtAction(nameof(GetCliente), new { id = cliente.IdCliente }, 
                     new { message = "Cliente criado com sucesso!", data = cliente });
             }
@@ -131,7 +128,7 @@ public async Task<ActionResult> GetClientes()
                 // ✅ Força o cliente a usar o ID da URL
                 cliente.IdCliente = id;
 
-                await _clienteService.AtualizarAsync(cliente);
+                await _clienteService.AtualizarAsync(ClienteConverter.ToViewModel(cliente));
                 return Ok(new { message = $"Cliente com ID {id} atualizado com sucesso!" });
             }
             catch (KeyNotFoundException ex)
@@ -171,5 +168,3 @@ public async Task<ActionResult> GetClientes()
         }
     }
 }
-
-*/
