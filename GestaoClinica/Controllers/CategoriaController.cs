@@ -14,7 +14,7 @@ namespace GestaoClinica.Controllers
     {
         private readonly ICategoriaService _categoriaService;
 
-        public CategoriaController (ICategoriaService categoriaService)
+        public CategoriaController(ICategoriaService categoriaService)
         {
             _categoriaService = categoriaService;
         }
@@ -39,14 +39,15 @@ namespace GestaoClinica.Controllers
                     message = "Categorias Listadas com sucesso",
                     data = resultado
                 });
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return StatusCode(500, new { message = "Erro ao listar categoria.", error = ex.Message });
             }
         }
 
         [HttpPost]
-        public async Task<ActionResult> PostCliente([FromBody] Categoria categoria)
+        public async Task<ActionResult> PostCategoria([FromBody] Categoria categoria)
         {
             if (!ModelState.IsValid)
             {
@@ -70,7 +71,7 @@ namespace GestaoClinica.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCliente(int idCategoria, [FromBody] Categoria categoria)
+        public async Task<IActionResult> PutCategoria(int id, [FromBody] Categoria categoria)
         {
             if (!ModelState.IsValid)
             {
@@ -79,11 +80,11 @@ namespace GestaoClinica.Controllers
 
             try
             {
-                // ✅ Força o cliente a usar o ID da URL
-                categoria.IdCategoria = idCategoria;
+                // Atualiza o ID da categoria com o valor da URL
+                categoria.IdCategoria = id;
 
                 await _categoriaService.AtualizarAsync(categoria);
-                return Ok(new { message = $"Categoria com ID {idCategoria} atualizado com sucesso!" });
+                return Ok(new { message = $"Categoria com ID {id} atualizado com sucesso!" });
             }
             catch (KeyNotFoundException ex)
             {
@@ -93,7 +94,7 @@ namespace GestaoClinica.Controllers
             {
                 return StatusCode(500, new
                 {
-                    message = "Erro ao atualizar cliente.",
+                    message = "Erro ao atualizar categoria.",
                     error = ex.Message,
                     inner = ex.InnerException?.Message
                 });

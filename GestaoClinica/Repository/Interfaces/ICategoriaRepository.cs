@@ -9,6 +9,7 @@ namespace GestaoClinica.Repository.Interfaces
         Task AtualizarAsync(Categoria categoria);
         Task ExcluirAsync(int idCategoria);
         Task<Categoria> ObterCategoriaPorIdAsync(int id);
+        Task<Categoria> ObterPorNomeAsync(string nomeCategoria);
 
     }
 }
