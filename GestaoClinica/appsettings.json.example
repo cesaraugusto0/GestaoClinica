@@ -6,7 +6,7 @@
         }
     },
     "ConnectionStrings": {
-        "DefaultConnection": "Server=localhost;Database=nome_do_banco;User Id=usuario;Password=senha;"
+        "DefaultConnection": "Server=localhost;Database=nome_do_banco;User Id=usuario;Password=senha;TrustServerCertificate=true;"
     },
     "AllowedHosts": "*",
     "DetailedErrors": true
