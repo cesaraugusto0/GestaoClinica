@@ -1,26 +1,33 @@
 ﻿@page "/clientes"
+@using GestaoClinica.Components.Shared
 @using GestaoClinica.ViewModel
 @using GestaoClinica.Services.Interfaces
 @inject IClienteService ClienteService
 @inject ISnackbar Snackbar
 @inject IJSRuntime JSRuntime
+@inject IDialogService DialogService
 
-<MudPaper Elevation="1" Style="padding: 16px; margin-bottom: 16px; background-color: #FFFFFF;">
+
+<MudPaper Elevation="1" Style="padding: 16px; margin-bottom: 16px;">
     <MudGrid>
         <MudItem xs="12" sm="8" md="6">
-            <MudTextField @bind-Value="searchTerm" 
-                          Label="Buscar clientes..." 
-                          Adornment="Adornment.Start" 
-                          AdornmentIcon="@Icons.Material.Filled.Search"
-                          Variant="Variant.Outlined" 
-                          DebounceInterval="300"
-                          @oninput="OnSearchChanged" 
+            <MudTextField @bind-Value="searchTerm"
+                          Label="Buscar clientes..."
+                          Adornment="Adornment.Start"
+                          Variant="Variant.Outlined"
+                          @onkeydown="@(async e => { if (e.Key == "Enter") await PerformSearch(); })"
                           Style="width: 100%;" />
         </MudItem>
         <MudItem xs="12" sm="4" md="6">
             <div style="display: flex; justify-content: flex-end; gap: 8px;">
-                <MudButton Color="Color.Primary" 
-                           Variant="Variant.Filled" 
+                <MudButton Color="Color.Primary"
+                           Variant="Variant.Filled"
+                           OnClick="@(async () => await PerformSearch())"
+                           StartIcon="@Icons.Material.Filled.Search">
+                    Buscar
+                </MudButton>
+                <MudButton Color="Color.Primary"
+                           Variant="Variant.Filled"
                            OnClick="OpenCreateModal"
                            StartIcon="@Icons.Material.Filled.Add">
                     Novo Cliente
@@ -31,10 +38,10 @@
 </MudPaper>
 
 <MudPaper Elevation="1" Style="background-color: #FFFFFF;">
-    <MudTable T="ClienteViewModel" 
-              Items="clientes" 
-              Hover="true" 
-              SortLabel="Ordenar por" 
+    <MudTable T="ClienteViewModel"
+              Items="clientes"
+              Hover="true"
+              SortLabel="Ordenar por"
               Dense="@dense"
               Striped="true"
               @ref="tableInstance">
@@ -57,23 +64,22 @@
             <MudTd DataLabel="Telefone">@context.Telefone</MudTd>
             <MudTd DataLabel="Email">@context.Email</MudTd>
             <MudTd DataLabel="Status">
-                <MudChip Size="Size.Small" 
-                         Color="@(context.Ativo ? Color.Success : Color.Error)" 
-                         Text="@context.Status" 
+                <MudChip Size="Size.Small"
+                         Color="@(context.Ativo ? Color.Success : Color.Error)"
+                         Text="@context.Status"
                          T="string" />
             </MudTd>
             <MudTd DataLabel="Ações">
-                @* Botão "Ver" removido conforme solicitado *@
-                <MudButton Size="Size.Small" 
-                           Variant="Variant.Text" 
-                           Color="Color.Primary" 
+                <MudButton Size="Size.Small"
+                           Variant="Variant.Text"
+                           Color="Color.Primary"
                            StartIcon="@Icons.Material.Filled.Edit"
                            OnClick="@(() => OpenEditModal(context))">
                     Editar
                 </MudButton>
-                <MudButton Size="Size.Small" 
-                           Variant="Variant.Text" 
-                           Color="Color.Error" 
+                <MudButton Size="Size.Small"
+                           Variant="Variant.Text"
+                           Color="Color.Error"
                            StartIcon="@Icons.Material.Filled.Delete"
                            OnClick="@(() => ConfirmDelete(context.IdCliente))">
                     Excluir
@@ -81,22 +87,11 @@
             </MudTd>
         </RowTemplate>
         <PagerContent>
-            <MudTablePager PageSizeOptions="new int[]{10, 25, 50, 100}" />
+            <MudTablePager PageSizeOptions="new int[] { 10, 25, 50, 100 }" />
         </PagerContent>
     </MudTable>
 </MudPaper>
 
-<MudDialog IsVisible="@showCreateDialog" OnClose="@CloseCreateModal" MaxWidth="MaxWidth.Large">
-    <DialogContent>
-        <ClienteForm Cliente="newCliente" OnSubmit="HandleCreate" OnCancel="CloseCreateModal" />
-    </DialogContent>
-</MudDialog>
-
-<MudDialog IsVisible="@showEditDialog" OnClose="@CloseEditModal" MaxWidth="MaxWidth.Large">
-    <DialogContent>
-        <ClienteForm Cliente="selectedCliente" OnSubmit="HandleUpdate" OnCancel="CloseEditModal" />
-    </DialogContent>
-</MudDialog>
 
 @code {
     private IEnumerable<ClienteViewModel> clientes = new List<ClienteViewModel>();
@@ -110,7 +105,9 @@
     // Variáveis de controle para visibilidade dos diálogos
     private bool showCreateDialog = false;
     private bool showEditDialog = false;
-    // Variável showViewDialog removida conforme solicitado
+
+    // Variável para mensagem de erro de CPF
+    private string cpfErrorMessage = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -130,37 +127,101 @@
         }
     }
 
+    // Método para realizar a pesquisa
+    private async Task PerformSearch()
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(searchTerm))
+            {
+                clientes = allClientes;
+            }
+            else
+            {
+                clientes = await ClienteService.ProcurarClientesAsync(searchTerm);
+            }
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Erro ao buscar clientes: {ex.Message}", Severity.Error);
+        }
+    }
+
     private async Task OnSearchChanged(ChangeEventArgs args)
     {
         searchTerm = args.Value?.ToString() ?? string.Empty;
-        
-        if (string.IsNullOrWhiteSpace(searchTerm))
-        {
-            clientes = allClientes;
-        }
-        else
-        {
-            clientes = await ClienteService.ProcurarClientesAsync(searchTerm);
-        }
-        
-        StateHasChanged();
+        // Removido o código de pesquisa automática do OnSearchChanged
+        // Agora a pesquisa será feita apenas quando clicar no botão ou pressionar Enter
     }
 
-    private void OpenCreateModal()
+    // Método para verificar se CPF já existe
+    private async Task CheckCpfExists(string cpf)
     {
-        newCliente = new ClienteViewModel { Endereco = new EnderecoViewModel() };
-        showCreateDialog = true;
+        cpfErrorMessage = string.Empty;
+
+        if (!string.IsNullOrWhiteSpace(cpf))
+        {
+            try
+            {
+                var clientesEncontrados = await ClienteService.ProcurarClientesAsync(cpf);
+                if (clientesEncontrados.Any())
+                {
+                    cpfErrorMessage = "CPF já cadastrado!";
+                    StateHasChanged();
+                }
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Erro ao verificar CPF: {ex.Message}", Severity.Error);
+            }
+        }
+    }
+
+    private async Task OpenCreateModal()
+    {
+        var parameters = new DialogParameters
+    {
+        { "Cliente", newCliente },
+        { "OnSubmit", EventCallback.Factory.Create(this, HandleCreate) },
+        { "OnCancelCallback", EventCallback.Factory.Create(this, () => { }) },
+        { "OnCpfCheck", EventCallback.Factory.Create<string>(this, CheckCpfExists) }
+    };
+
+        var options = new DialogOptions { MaxWidth = MaxWidth.Large, CloseButton = true, FullWidth = true };
+
+        var dialog = DialogService.Show<ClienteForm>("Novo Cliente", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            await LoadClientes();
+            Snackbar.Add("Cliente criado com sucesso!", Severity.Success);
+        }
     }
 
     private void CloseCreateModal()
     {
         showCreateDialog = false;
+        cpfErrorMessage = string.Empty; // Limpar mensagem de erro
+        //StateHasChanged(); // Forçar atualização da UI
     }
 
     private async Task HandleCreate()
     {
         try
         {
+            // Verificar novamente se o CPF já existe antes de criar
+            if (!string.IsNullOrWhiteSpace(newCliente.CPF))
+            {
+                var clientesEncontrados = await ClienteService.ProcurarClientesAsync(newCliente.CPF);
+                if (clientesEncontrados.Any())
+                {
+                    Snackbar.Add("CPF já cadastrado!", Severity.Warning);
+                    return;
+                }
+            }
+
             await ClienteService.AdicionarAsync(newCliente);
             await LoadClientes();
             Snackbar.Add("Cliente criado com sucesso!", Severity.Success);
@@ -172,7 +233,7 @@
         }
     }
 
-    private void OpenEditModal(ClienteViewModel cliente)
+    private async Task OpenEditModal(ClienteViewModel cliente)
     {
         selectedCliente = new ClienteViewModel
         {
@@ -195,12 +256,30 @@
                 Cep = cliente.Endereco.Cep
             } : new EnderecoViewModel()
         };
-        showEditDialog = true;
+
+        var parameters = new DialogParameters
+    {
+        { "Cliente", selectedCliente },
+        { "OnSubmit", EventCallback.Factory.Create(this, HandleUpdate) },
+        { "OnCancelCallback", EventCallback.Factory.Create(this, () => { }) }
+    };
+
+        var options = new DialogOptions { MaxWidth = MaxWidth.Large, CloseButton = true, FullWidth = true };
+
+        var dialog = DialogService.Show<ClienteForm>("Editar Cliente", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            await LoadClientes();
+            Snackbar.Add("Cliente atualizado com sucesso!", Severity.Success);
+        }
     }
 
     private void CloseEditModal()
     {
         showEditDialog = false;
+        StateHasChanged(); // Forçar atualização da UI
     }
 
     private async Task HandleUpdate()
@@ -218,14 +297,12 @@
         }
     }
 
-    // Métodos OpenViewModal e CloseViewModal removidos conforme solicitado
-
     private async Task ConfirmDelete(int id)
     {
         var cliente = clientes.FirstOrDefault(c => c.IdCliente == id);
         if (cliente == null) return;
 
-        bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", 
+        bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm",
             $"Tem certeza que deseja excluir o cliente {cliente.Nome}?");
 
         if (confirmed)
