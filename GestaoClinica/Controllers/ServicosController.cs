@@ -1,6 +1,4 @@
 ﻿using GestaoClinica.Entities;
-using GestaoClinica.Entities.GestaoClinica.Entities;
-using GestaoClinica.Services.Implementations;
 using GestaoClinica.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;

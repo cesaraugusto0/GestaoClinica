@@ -1,7 +1,28 @@
-﻿
-<MudNavMenu>
-    <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
+﻿@using MudBlazor
 
-</MudNavMenu>
+<div class="nav-menu">
+    <MudList T="object">
+        <MudListItem Icon="@Icons.Material.Filled.Home" Text="Dashboard" Href="/" />
+        <MudListItem Icon="@Icons.Material.Filled.People" Text="Pacientes" Href="/clientes" />
+        <MudListItem Icon="@Icons.Material.Filled.Event" Text="Agendamentos" Href="/agendamentos" />
+        <MudListItem Icon="@Icons.Material.Filled.LocalHospital" Text="Serviços" Href="/servicos" />
+        <MudListItem Icon="@Icons.Material.Filled.Person" Text="Funcionários" Href="/funcionarios" />
+        <MudListItem Icon="@Icons.Material.Filled.CalendarToday" Text="Calendário" Href="/calendario" />
+        <MudListItem Icon="@Icons.Material.Filled.Assessment" Text="Relatórios" Href="/relatorios" />
+        <MudListItem Icon="@Icons.Material.Filled.Settings" Text="Configurações" Href="/configuracoes" />
+    </MudList>
 
+    @* Itens "Ajuda" e "Sobre" removidos conforme solicitado *@
+</div>
 
+<style>
+    .nav-menu {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+        .nav-menu .mud-list {
+            flex: 1;
+        }
+</style>

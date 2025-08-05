@@ -1,13 +1,11 @@
 using GestaoClinica.Components;
 using GestaoClinica.Data.Context;
 using GestaoClinica.Repository.Interfaces;
-using GestaoClinica.Repository;
 using GestaoClinica.Services.Interfaces;
 using GestaoClinica.Services.Implementations;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
 using GestaoClinica.Repository.Implementation;
-using GestaoClinica.Entities;
 using GestaoClinica.Services;
 using System.Text.Json.Serialization;
 
@@ -46,6 +44,9 @@ builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 
 // --- Blazor e MudBlazor ---
+// Add services to the container.
+builder.Services.AddRazorPages(); // ← Essencial para páginas Razor
+builder.Services.AddServerSideBlazor();
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
@@ -57,6 +58,20 @@ builder.Services.AddControllers();
 // --- Swagger (para testar a API) ---
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+// --- Serviços (Repository e Service) ---
+builder.Services.AddScoped<IClienteService, MockClienteService>();
+
+builder.Services.AddMudServices(config =>
+{
+    config.SnackbarConfiguration.PositionClass = MudBlazor.Defaults.Classes.Position.BottomRight;
+    config.SnackbarConfiguration.PreventDuplicates = false;
+    config.SnackbarConfiguration.NewestOnTop = false;
+    config.SnackbarConfiguration.ShowCloseIcon = true;
+    config.SnackbarConfiguration.VisibleStateDuration = 5000;
+    config.SnackbarConfiguration.HideTransitionDuration = 500;
+    config.SnackbarConfiguration.ShowTransitionDuration = 500;
+    config.SnackbarConfiguration.SnackbarVariant = MudBlazor.Variant.Filled;
+});
 
 var app = builder.Build();
 
@@ -73,6 +88,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseRouting();
 app.UseAntiforgery();
 
 // --- Mapeie os controllers (API) ---

@@ -1,7 +1,6 @@
 ﻿using GestaoClinica.Entities;
 using GestaoClinica.Entities.Enums;
 using Microsoft.EntityFrameworkCore;
-using GestaoClinica.Entities.GestaoClinica.Entities;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GestaoClinica.Data.Context

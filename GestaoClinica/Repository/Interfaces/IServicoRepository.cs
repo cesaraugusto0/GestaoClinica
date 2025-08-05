@@ -1,5 +1,4 @@
 ﻿using GestaoClinica.Entities;
-using GestaoClinica.Entities.GestaoClinica.Entities;
 namespace GestaoClinica.Repository.Interfaces
 {
     public interface IServicoRepository

@@ -1,3 +1,4 @@
+/*
 // Controllers/ClientesController.cs
 using Microsoft.AspNetCore.Mvc;
 using GestaoClinica.Services.Interfaces;
@@ -170,3 +171,5 @@ public async Task<ActionResult> GetClientes()
         }
     }
 }
+
+*/
