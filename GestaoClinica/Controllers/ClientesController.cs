@@ -152,7 +152,7 @@ public async Task<ActionResult> GetClientes()
         /// Exclui um cliente
         /// </summary>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCliente(int id)
+        public async Task<IActionResult> DeleteCategoria(int id)
         {
             try
             {

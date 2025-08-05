@@ -102,21 +102,47 @@ namespace GestaoClinica.Controllers
         }
 
         [HttpDelete("{idCategoria}")]
-        public async Task<IActionResult> DeleteCliente(int idCategoria)
+        public async Task<IActionResult> DeleteCategoria(int idCategoria)
         {
             try
             {
                 await _categoriaService.ExcluirAsync(idCategoria);
-                return Ok(new { message = $"Categoria com ID {idCategoria} excluído com sucesso!" });
+                return Ok(new { message = $"Categoria com ID {idCategoria} excluída com sucesso!" });
             }
             catch (KeyNotFoundException)
             {
-                return NotFound(new { message = $"Cliente com ID {idCategoria} não encontrado." });
+                return NotFound(new { message = $"Categoria com ID {idCategoria} não encontrada." });
+            }
+            catch (InvalidOperationException ex) when (ex.Message.Contains("vinculada", StringComparison.OrdinalIgnoreCase))
+            {
+                // Erro personalizado de vinculação
+                return BadRequest(new
+                {
+                    message = "Não é possível excluir esta categoria.",
+                    error = ex.Message
+                });
+            }
+            catch (Exception ex) when (ex.InnerException?.Message.Contains("REFERENCE constraint", StringComparison.OrdinalIgnoreCase) ?? false)
+            {
+                // Captura erro do banco: FK violada
+                return BadRequest(new
+                {
+                    message = "Não é possível excluir esta categoria.",
+                    error = "A categoria está vinculada a um ou mais serviços e não pode ser excluída."
+                });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "Erro ao excluir cliente.", error = ex.Message });
+                // Qualquer outro erro (inesperado)
+                return StatusCode(500, new
+                {
+                    message = "Erro ao excluir categoria.",
+                    error = "Ocorreu um erro interno no servidor.",
+                    // Só mostre ex.Message em desenvolvimento
+                });
             }
         }
+
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿
+using GestaoClinica.Data.Context;
 using GestaoClinica.Entities;
 using GestaoClinica.Repository.Implementation;
 using GestaoClinica.Repository.Interfaces;
@@ -10,31 +11,33 @@ namespace GestaoClinica.Services
     public class CategoriaService : ICategoriaService
     {
         private readonly ICategoriaRepository _categoriaRepository;
+        private readonly SQLServerDbContext _context;
 
-        public CategoriaService(ICategoriaRepository categoriaRepository)
+        public CategoriaService(ICategoriaRepository categoriaRepository, SQLServerDbContext context)
         {
             _categoriaRepository = categoriaRepository;
+            _context = context;
         }
 
         public async Task AdicionarAsync(Categoria categoria)
-{
-    if (string.IsNullOrEmpty(categoria.NomeCategoria))
-    {
-        throw new ArgumentException("É obrigatório definir um nome para a categoria");
-    }
+        {
+            if (string.IsNullOrEmpty(categoria.NomeCategoria))
+            {
+                throw new ArgumentException("É obrigatório definir um nome para a categoria");
+            }
 
-    // 🔍 Verifica se já existe uma categoria com o mesmo nome (case-insensitive)
-    var nomeExistente = await _categoriaRepository.ObterPorNomeAsync(categoria.NomeCategoria.Trim());
-    if (nomeExistente != null)
-    {
-        throw new InvalidOperationException($"Já existe uma categoria com o nome '{categoria.NomeCategoria}'.");
-    }
+            // 🔍 Verifica se já existe uma categoria com o mesmo nome (case-insensitive)
+            var nomeExistente = await _categoriaRepository.ObterPorNomeAsync(categoria.NomeCategoria.Trim());
+            if (nomeExistente != null)
+            {
+                throw new InvalidOperationException($"Já existe uma categoria com o nome '{categoria.NomeCategoria}'.");
+            }
 
-    categoria.DataCriacao = DateTime.UtcNow;
-    categoria.UltimaAtualizacao = DateTime.UtcNow;
+            categoria.DataCriacao = DateTime.UtcNow;
+            categoria.UltimaAtualizacao = DateTime.UtcNow;
 
-    await _categoriaRepository.AdicionarAsync(categoria);
-}
+            await _categoriaRepository.AdicionarAsync(categoria);
+        }
 
         public async Task AtualizarAsync(Categoria categoria)
         {
@@ -42,16 +45,23 @@ namespace GestaoClinica.Services
             await _categoriaRepository.AtualizarAsync(categoria);
         }
 
-public async Task ExcluirAsync(int idCategoria)
-{
-    var categoria = await _categoriaRepository.ObterCategoriaPorIdAsync(idCategoria);
-    if (categoria == null)
-    {
-        throw new KeyNotFoundException($"Categoria com ID {idCategoria} não encontrada.");
-    }
+        public async Task ExcluirAsync(int idCategoria)
+        {
+            var categoria = await _categoriaRepository.ObterCategoriaPorIdAsync(idCategoria);
+            if (categoria == null)
+            {
+                throw new KeyNotFoundException($"Categoria com ID {idCategoria} não encontrada.");
+            }
 
-    await _categoriaRepository.ExcluirAsync(idCategoria);
-}
+            
+            var temServicos = await _context.Servicos.AnyAsync(s => s.CategoriaId == idCategoria);
+            if (temServicos)
+            {
+                throw new InvalidOperationException("A categoria está vinculada a um ou mais serviços e não pode ser excluída.");
+            }
+
+            await _categoriaRepository.ExcluirAsync(idCategoria);
+        }
 
         public async Task<Categoria> ObterCategoriaPorIdAsync(int id)
         {
