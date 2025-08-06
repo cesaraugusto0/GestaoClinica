@@ -1,35 +1,41 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GestaoClinica.Entities
+
 {
-    [Table("Servico")]
 
-    public class Servico
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
+
+    namespace GestaoClinica.Entities
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int IdServico { get; set; }
-        public string NomeServico { get; set; }
-        public string Descricao { get; set; }
-        public decimal Preco { get; set; }
-        public int DuracaoEstimada { get; set; }
-        public bool Ativo { get; set; }
-        public DateTime DataCriacao { get; set; } = DateTime.UtcNow;
-        public DateTime UltimaAtualizacao { get; set; } = DateTime.UtcNow;
+        [Table("Servico")]
 
-        public int CategoriaId { get; set; }
-        public Categoria? Categoria { get; set; }
-
-        //public ICollection<Agendamento> Agendamentos { get; set; } = new List<Agendamento>();
-
-        public Servico()
+        public class Servico
         {
-        }
+            [Key]
+            [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+            public int IdServico { get; set; }
+            public string NomeServico { get; set; }
+            public string Descricao { get; set; }
+            public decimal Preco { get; set; }
+            public int DuracaoEstimada { get; set; }
+            public bool Ativo { get; set; }
+            public DateTime DataCriacao { get; set; } = DateTime.UtcNow;
+            public DateTime UltimaAtualizacao { get; set; } = DateTime.UtcNow;
 
-        public Servico(int idServico)
-        {
-            IdServico = idServico;
+            public int CategoriaId { get; set; }
+            public Categoria? Categoria { get; set; }
+
+            //public ICollection<Agendamento> Agendamentos { get; set; } = new List<Agendamento>();
+
+            public Servico()
+            {
+            }
+
+            public Servico(int idServico)
+            {
+                IdServico = idServico;
+            }
         }
     }
 }

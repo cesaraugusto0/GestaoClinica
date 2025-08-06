@@ -2,6 +2,7 @@
 using GestaoClinica.Entities;
 using GestaoClinica.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using GestaoClinica.Entities.GestaoClinica.Entities;
 
 namespace GestaoClinica.Repository.Implementation
 {

@@ -2,94 +2,46 @@
 
 <MudThemeProvider Theme="@_theme" IsDarkMode="_isDarkMode" />
 <MudPopoverProvider />
-<MudDialogProvider FullWidth="true" MaxWidth="MaxWidth.Medium" />
+<MudDialogProvider />
 <MudSnackbarProvider />
-
 <MudLayout>
-    <MudAppBar Elevation="1" Style="background-color: #57A8A1;">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu"
-                       Color="Color.Inherit"
-                       Edge="Edge.Start"
-                       OnClick="@DrawerToggle" />
-
-        <MudText Typo="Typo.h6" Class="ml-3" Style="color: #FFFFFF;">
-            <MudIcon Icon="@Icons.Material.Filled.LocalHospital" Size="Size.Small" Class="mr-2" />
-            ClinicPro
-        </MudText>
-
+    <MudAppBar Elevation="1">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudText Typo="Typo.h5" Class="ml-3">Application</MudText>
         <MudSpacer />
-
-        <MudIconButton Icon="@(DarkLightModeButtonIcon)"
-                       Color="Color.Inherit" Style="color: #FFFFFF;"
-                       OnClick="@DarkModeToggle"
-                       Title="Alternar modo claro/escuro" />
-
-        <MudIconButton Icon="@Icons.Material.Filled.AccountCircle"
-                       Color="Color.Inherit" Style="color: #FFFFFF;"
-                       Edge="Edge.End"
-                       Title="Perfil do usuário">
-            <MudMenu AnchorOrigin="Origin.TopRight"
-                     TransformOrigin="Origin.TopRight">
-                <MudMenuItem>
-                    <MudIcon Icon="@Icons.Material.Filled.Person" Class="mr-2" />
-                    Meu Perfil
-                </MudMenuItem>
-                <MudMenuItem>
-                    <MudIcon Icon="@Icons.Material.Filled.Settings" Class="mr-2" />
-                    Configurações
-                </MudMenuItem>
-                <MudDivider />
-                <MudMenuItem>
-                    <MudIcon Icon="@Icons.Material.Filled.ExitToApp" Class="mr-2" Color="Color.Error" />
-                    Sair
-                </MudMenuItem>
-            </MudMenu>
-        </MudIconButton>
+        <MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle" />
+        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
     </MudAppBar>
-
-    <MudDrawer @bind-Open="_drawerOpen"
-               ClipMode="DrawerClipMode.Always"
-               Elevation="2"
-               Width="260px">
-        
+    <MudDrawer id="nav-drawer" @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
         <NavMenu />
     </MudDrawer>
-
     <MudMainContent Class="pt-16 pa-4">
         @Body
     </MudMainContent>
 </MudLayout>
 
-@code {
-    [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
 
-    private bool _isDarkMode = false; // Modo claro por padrão
+<div id="blazor-error-ui" data-nosnippet>
+    An unhandled error has occurred.
+    <a href="." class="reload">Reload</a>
+    <span class="dismiss">🗙</span>
+</div>
+
+@code {
+    private bool _drawerOpen = true;
+    private bool _isDarkMode = true;
     private MudTheme? _theme = null;
-    private bool _drawerOpen = true; // Drawer aberto por padrão
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
 
-        _theme = new MudTheme
-            {
-                PaletteLight = new PaletteLight()
-                {
-                    Primary = "#57A8A1", // Verde principal
-                    Secondary = "#ff4081",
-                    Background = "#FFFFFF", // Fundo branco
-                    AppbarBackground = "#57A8A1", // Barra superior verde
-                    AppbarText = "#FFFFFF", // Texto branco
-                    DrawerBackground = "#FFFFFF", // Drawer branco
-                    DrawerText = "#424242", // Texto do drawer
-                    Surface = "#FFFFFF", // Superfícies brancas
-                },
-                PaletteDark = new PaletteDark()
-                {
-                    Primary = "#57A8A1", // Mesmo verde no modo escuro
-                },
-                LayoutProperties = new LayoutProperties()
-            };
+        _theme = new()
+        {
+            PaletteLight = _lightPalette,
+            PaletteDark = _darkPalette,
+            LayoutProperties = new LayoutProperties()
+        };
     }
 
     private void DrawerToggle()
@@ -102,9 +54,50 @@
         _isDarkMode = !_isDarkMode;
     }
 
+    private readonly PaletteLight _lightPalette = new()
+    {
+        Black = "#110e2d",
+        AppbarText = "#424242",
+        AppbarBackground = "rgba(255,255,255,0.8)",
+        DrawerBackground = "#ffffff",
+        GrayLight = "#e8e8e8",
+        GrayLighter = "#f9f9f9",
+    };
+
+    private readonly PaletteDark _darkPalette = new()
+    {
+        Primary = "#7e6fff",
+        Surface = "#1e1e2d",
+        Background = "#1a1a27",
+        BackgroundGray = "#151521",
+        AppbarText = "#92929f",
+        AppbarBackground = "rgba(26,26,39,0.8)",
+        DrawerBackground = "#1a1a27",
+        ActionDefault = "#74718e",
+        ActionDisabled = "#9999994d",
+        ActionDisabledBackground = "#605f6d4d",
+        TextPrimary = "#b2b0bf",
+        TextSecondary = "#92929f",
+        TextDisabled = "#ffffff33",
+        DrawerIcon = "#92929f",
+        DrawerText = "#92929f",
+        GrayLight = "#2a2833",
+        GrayLighter = "#1e1e2d",
+        Info = "#4a86ff",
+        Success = "#3dcb6c",
+        Warning = "#ffb545",
+        Error = "#ff3f5f",
+        LinesDefault = "#33323e",
+        TableLines = "#33323e",
+        Divider = "#292838",
+        OverlayLight = "#1e1e2d80",
+    };
+
     public string DarkLightModeButtonIcon => _isDarkMode switch
     {
-        true => Icons.Material.Filled.LightMode,
-        false => Icons.Material.Filled.DarkMode,
+        true => Icons.Material.Rounded.AutoMode,
+        false => Icons.Material.Outlined.DarkMode,
     };
 }
+
+

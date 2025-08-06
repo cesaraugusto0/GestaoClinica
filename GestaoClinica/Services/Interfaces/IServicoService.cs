@@ -1,4 +1,5 @@
 ﻿using GestaoClinica.Entities;
+using GestaoClinica.Entities.GestaoClinica.Entities;
 
 namespace GestaoClinica.Services.Interfaces
 {
