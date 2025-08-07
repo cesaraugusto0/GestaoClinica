@@ -4,11 +4,14 @@ using GestaoClinica.Repository.Interfaces;
 using GestaoClinica.Repository;
 using GestaoClinica.Services.Interfaces;
 using GestaoClinica.Services.Implementations;
-using Microsoft.EntityFrameworkCore;
-using MudBlazor.Services;
 using GestaoClinica.Repository.Implementation;
-using GestaoClinica.Entities;
 using GestaoClinica.Services;
+using GestaoClinica.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using MudBlazor.Services;
+using System.Text;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,6 +29,7 @@ builder.Services.AddDbContext<SQLServerDbContext>(options =>
     }
 });
 
+// --- Serialização JSON ---
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
@@ -33,7 +37,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.WriteIndented = true;
 });
 
-// --- Serviços (Repository e Service) ---
+// --- Repositórios e Serviços ---
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
 builder.Services.AddScoped<IClienteService, ClienteService>();
 builder.Services.AddScoped<IFuncionarioRepository, FuncionarioRepository>();
@@ -45,21 +49,45 @@ builder.Services.AddScoped<IServicoService, ServicoService>();
 builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 
+// --- Token JWT Service ---
+builder.Services.AddScoped<TokenService>();
+
+// --- Autenticação JWT ---
+var jwtSettings = builder.Configuration.GetSection("Jwt");
+var jwtKey = jwtSettings["Key"];
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = true;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtSettings["Issuer"],
+        ValidAudience = jwtSettings["Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+    };
+});
+
 // --- Blazor e MudBlazor ---
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddMudServices();
 
-// --- Controllers (API) ---
-builder.Services.AddControllers();
-
-// --- Swagger (para testar a API) ---
+// --- Swagger ---
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
-// --- CORS (liberando tudo) ---
+// --- CORS liberado ---
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("PermitirTudo", policy =>
@@ -72,6 +100,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+// --- Pipeline ---
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
@@ -85,13 +114,13 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
 
-// --- Ativar CORS antes do MapControllers ---
 app.UseCors("PermitirTudo");
 
-// --- API ---
+app.UseAuthentication(); // 🔐 JWT
+app.UseAuthorization();  // 🔐 JWT
+
 app.MapControllers();
 
-// --- Blazor ---
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
