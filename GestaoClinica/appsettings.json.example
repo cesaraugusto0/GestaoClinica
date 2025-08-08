@@ -9,5 +9,10 @@
         "DefaultConnection": "Server=localhost;Database=nome_do_banco;User Id=usuario;Password=senha;TrustServerCertificate=true;"
     },
     "AllowedHosts": "*",
-    "DetailedErrors": true
+    "DetailedErrors": true,
+    "Jwt": {
+        "Key":  "a1234567890!@#$%¨&*()_+qwertyuiopasdfgh",
+        "Issuer": "GestaoClinicaAPI",
+        "Audience": "GestaoClinicaClient"
+    }
 }
