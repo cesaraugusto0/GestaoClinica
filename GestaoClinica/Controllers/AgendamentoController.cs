@@ -2,6 +2,7 @@
 using GestaoClinica.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mime;
+using GestaoClinica.DTO;
 
 namespace GestaoClinica.Controllers
 {
@@ -63,7 +64,7 @@ namespace GestaoClinica.Controllers
         /// Cria um novo agendamento
         /// </summary>
         [HttpPost]
-        public async Task<ActionResult> PostAgendamento([FromBody] Agendamento agendamento)
+        public async Task<ActionResult> PostAgendamento([FromBody] AgendamentoCreateDTO agendamento)
         {
 
             if (!ModelState.IsValid)

@@ -1,4 +1,5 @@
-﻿using GestaoClinica.Entities;
+﻿using GestaoClinica.DTO;
+using GestaoClinica.Entities;
 
 namespace GestaoClinica.Services.Interfaces
 {
@@ -8,9 +9,9 @@ namespace GestaoClinica.Services.Interfaces
         Task<IEnumerable<Agendamento>> ListarAgendamentosPorClienteAsync(int idCliente);
         Task<IEnumerable<Agendamento>> ListarAgendamentosPorFuncionarioAsync(int idFuncionario);
         Task<IEnumerable<Agendamento>> ListarAgendamentosPorServicoAsync(int idServico);
-        Task<IEnumerable<Agendamento>> ListarAgendamentosAsync();
+        Task<IEnumerable<AgendamentoDTO>> ListarAgendamentosAsync();
         Task<Agendamento> ObterAgendamentoPorIdAsync(int id);
-        Task AdicionarAsync(Agendamento agendamento);
+        Task AdicionarAsync(AgendamentoCreateDTO agendamento);
         Task AtualizarAsync(Agendamento agendamento);
         Task ExcluirAsync(int id);
     }

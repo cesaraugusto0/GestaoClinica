@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json.Serialization;
+using GestaoClinica.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,10 +26,11 @@ builder.Services.AddDbContext<SQLServerDbContext>(options =>
     }
 });
 
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
+
 // --- Serialização JSON ---
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
-    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     options.JsonSerializerOptions.WriteIndented = true;
 });

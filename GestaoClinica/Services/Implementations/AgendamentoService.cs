@@ -1,4 +1,6 @@
-﻿using GestaoClinica.Entities;
+﻿using AutoMapper;
+using GestaoClinica.DTO;
+using GestaoClinica.Entities;
 using GestaoClinica.Repository.Interfaces;
 using GestaoClinica.Services.Interfaces;
 
@@ -7,20 +9,17 @@ namespace GestaoClinica.Services.Implementations
     public class AgendamentoService : IAgendamentoService
     {
         private readonly IAgendamentoRepository _agendamentoRepository;
+        private readonly IMapper _mapper;
 
-        public AgendamentoService(IAgendamentoRepository agendamentoRepository)
+        public AgendamentoService(IAgendamentoRepository agendamentoRepository, IMapper mapper)
         {
             _agendamentoRepository = agendamentoRepository;
+            _mapper = mapper;
         }
 
-        public async Task AdicionarAsync(Agendamento agendamento)
+        public async Task AdicionarAsync(AgendamentoCreateDTO agendamentoDTO)
         {
-            // Adicionando validação de agendamento, por exemplo.
-            if (agendamento.DataHoraInicio <= DateTime.Now)
-            {
-                throw new ArgumentException("A data e hora de início do agendamento deve ser no futuro.");
-            }
-
+            var agendamento = _mapper.Map<Agendamento>(agendamentoDTO);
             await _agendamentoRepository.AdicionarAsync(agendamento);
         }
 
@@ -41,9 +40,10 @@ namespace GestaoClinica.Services.Implementations
             await _agendamentoRepository.ExcluirAsync(id);
         }
 
-        public async Task<IEnumerable<Agendamento>> ListarAgendamentosAsync()
+        public async Task<IEnumerable<AgendamentoDTO>> ListarAgendamentosAsync()
         {
-            return await _agendamentoRepository.ListarAgendamentosAsync();
+            var agendamentos = await _agendamentoRepository.ListarAgendamentosAsync();
+            return _mapper.Map<IEnumerable<AgendamentoDTO>>(agendamentos);
         }
 
         public async Task<Agendamento> ObterAgendamentoPorIdAsync(int id)
