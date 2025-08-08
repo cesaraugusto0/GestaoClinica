@@ -1,16 +1,12 @@
-using GestaoClinica.Components;
 using GestaoClinica.Data.Context;
 using GestaoClinica.Repository.Interfaces;
-using GestaoClinica.Repository;
 using GestaoClinica.Services.Interfaces;
 using GestaoClinica.Services.Implementations;
 using GestaoClinica.Repository.Implementation;
 using GestaoClinica.Services;
-using GestaoClinica.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using MudBlazor.Services;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -77,12 +73,6 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// --- Blazor e MudBlazor ---
-builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
-
-builder.Services.AddMudServices();
-
 // --- Swagger ---
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -103,7 +93,7 @@ var app = builder.Build();
 // --- Pipeline ---
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error", createScopeForErrors: true);
+    app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
 
@@ -111,17 +101,11 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
-app.UseAntiforgery();
-
 app.UseCors("PermitirTudo");
 
 app.UseAuthentication(); // 🔐 JWT
 app.UseAuthorization();  // 🔐 JWT
 
 app.MapControllers();
-
-app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
 
 app.Run();
