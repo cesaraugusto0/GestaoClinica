@@ -1,3 +1,24 @@
+# 📌 Visão Geral
+
+Este é o backend do sistema de gestão de clínica, desenvolvido em .NET. Ele fornece a API RESTful para o frontend em React, com autenticação JWT e operações CRUD para gerenciamento de clientes, atendimentos, serviços e profissionais.
+
+## 🚀 Como Executar o Projeto
+
+Pré-requisitos
+
+- .NET 9 SDK ou superior
+- SQL Server (ou Docker para rodar em container)
+- Visual Studio ou VS Code (opcional)
+
+## Configuração
+
+Clone o repositório:
+
+```bash
+git clone https://github.com/cesaraugusto0/GestaoClinica.git
+cd GestaoClinica
+```
+
 # Configuração do SQL Server no Linux via Docker
 
 Primeiramente instale o docker e garanta que ele esteja devidamente instalado.
@@ -26,14 +47,16 @@ Para conectar um cliente de banco de dados (como SSMS, Azure Data Studio ou DBea
 
 Escolha o SGBD de sua preferência, conecte o banco com o SGBD e execute o script de criação do banco e as suas tabelas.
 
-
 ------------------------------------------------------------------
+## Execução de scripts de criação do banco 
 
-# Configuração do Ambiente de Desenvolvimento
+Com o banco de dados SqlServer devidamente instalado, execute os scripts de criação do banco. Na projeto, é possivel encontrar uma pasta chamada scripts que possui os scripts sql de criação do banco de dados, com tabelas e relacionamentos.
+
+## Configure a conexão com o banco de dados:
 
 Este projeto utiliza um arquivo de configuração `appsettings.json` para definir as configurações necessárias ao funcionamento da aplicação, como conexão com banco de dados, URLs de serviços e outros parâmetros de ambiente.
 
-## Arquivo de Exemplo
+### Arquivo de Exemplo
 
 O arquivo `appsettings.json.example` é um modelo com a estrutura necessária para o correto funcionamento do sistema. Ele **não contém dados sensíveis** (como nomes de banco, senhas ou chaves de API), pois essas informações variam de acordo com o ambiente (desenvolvimento, homologação, produção).
 
@@ -51,73 +74,21 @@ O arquivo `appsettings.json.example` é um modelo com a estrutura necessária pa
         "DefaultConnection": "Server=localhost;Database=nome_do_banco;User Id=usuario;Password=senha;"
     },
     "AllowedHosts": "*",
-    "DetailedErrors": true
+    "DetailedErrors": true,
+    "Jwt": {
+        "Key":  "key_hash",
+        "Issuer": "GestaoClinicaAPI",
+        "Audience": "GestaoClinicaClient"
+    }
 }
 ```
 ⚠️ Importante: Este arquivo (appsettings.json.example) é apenas um modelo. Nunca adicione informações sensíveis (como senhas ou chaves) nele, pois ele é versionado. O arquivo real (appsettings.json) é gerado localmente e ignorado pelo Git.
 
-### Primeiros Passos Após o Clone 
 
-Após clonar o repositório, siga os passos abaixo para configurar o ambiente local: 
+# 🌐 Integração com Frontend
 
-1. Navegue até a raiz do projeto.
-2. Localize o arquivo appsettings.json.example.
-3. Copie e renomeie o arquivo para appsettings.json:
-```bash
-cp appsettings.json.example appsettings.json
-```
-4. Edite o novo arquivo appsettings.json com as credenciais e configurações do seu ambiente local.
+O frontend em React está configurado para consumir esta API. Certifique-se de que as URLs no frontend apontem para o endereço correto do backend.
 
-### Observações 
-- O arquivo appsettings.json está listado no .gitignore e não será versionado, evitando vazamento de dados sensíveis.
-- Sempre que mudar de máquina ou configurar um novo ambiente, repita o processo acima.
-- Em ambientes de produção, utilize variáveis de ambiente ou um sistema de gerenciamento de configurações seguro.
-     
-------------------------------------------------------------------
-
- 1 - Branches de Funcionalidades (Feature Branches):
-
-- agendamento	-> CRUD de agendamentos + calendário.
-clientes -> Cadastro de clientes, histórico e vinculação com Pessoa.
-
-- autenticacao -> Login, perfis (IdentityServer) e controle de acesso.
-
-- notificacoes -> Lembretes automáticos (e-mail/WhatsApp) para agendamentos.
-
-- relatorios -> Dashboards e relatórios (ex: taxa de ocupação, serviços mais solicitados).
-
-- fichas-atendimento -> Fichas digitais de atendimento vinculadas a clientes.
+Segue o repositório de frontend: https://github.com/CaioVAzeredo/front-end-gestao-clinica
 
 
- 2 - Ver todas as branches disponíveis:
-    git branch       # Lista branches locais
-    git branch -a    # Lista TODAS (locais + remotas)
-    
- 3 - Trocar para uma branch existente
-    git checkout nome_da_branch
-    
- 4 - Verifique em qual branch você está 
-    git branch
-    
- 
- 
- -------------------------- Fazer commit na branch que estou usando -------------------------
-    1 - Verifique em qual branch você está (confirme que está na correta):
-    git branch
-
-    2 - Adicione as alterações ao staging area (preparação para commit):
-    git add .
-    
-    3 - Faça o commit com uma mensagem descritiva:
-    git commit -m "Descrição clara do que foi alterado"
-
-    4 - Envie para o repositório:
-    git push origin nome-da-branch
-
- ----------------------------- DICAS -------------------------
- 
- Sempre atualize sua branch local antes de trocar:
-
-    git pull origin nome_da_branch
-
-teste de commit
