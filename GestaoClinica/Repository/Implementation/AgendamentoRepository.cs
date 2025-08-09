@@ -1,4 +1,5 @@
 ﻿using GestaoClinica.Data.Context;
+using GestaoClinica.DTO;
 using GestaoClinica.Entities;
 using GestaoClinica.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -80,6 +81,21 @@ namespace GestaoClinica.Repository.Implementation
                 _context.Agendamentos.Remove(agendamentoExistente);
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public async Task<IEnumerable<FuncionarioAgendamentoReportDTO>> GetTop5FuncionariosComMaisAgendamentosAsync()
+        {
+            return await _context.Agendamentos
+                .GroupBy(a => new { a.FuncionarioId, a.Funcionario.Nome })
+                .Select(g => new FuncionarioAgendamentoReportDTO
+                {
+                    FuncionarioId = g.Key.FuncionarioId,
+                    NomeFuncionario = g.Key.Nome,
+                    TotalAgendamentos = g.Count()
+                })
+                .OrderByDescending(f => f.TotalAgendamentos)
+                .Take(5)
+                .ToListAsync();
         }
     }
 }

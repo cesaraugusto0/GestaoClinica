@@ -1,4 +1,5 @@
-﻿using GestaoClinica.Entities;
+﻿using GestaoClinica.DTO;
+using GestaoClinica.Entities;
 
 namespace GestaoClinica.Repository.Interfaces
 {
@@ -14,5 +15,6 @@ namespace GestaoClinica.Repository.Interfaces
         Task AdicionarAsync(Agendamento agendamento);
         Task AtualizarAsync(Agendamento agendamento);
         Task ExcluirAsync(int id);
+        Task<IEnumerable<FuncionarioAgendamentoReportDTO>> GetTop5FuncionariosComMaisAgendamentosAsync();
     }
 }
