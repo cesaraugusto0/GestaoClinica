@@ -16,5 +16,6 @@ namespace GestaoClinica.Repository.Interfaces
         Task AtualizarAsync(Agendamento agendamento);
         Task ExcluirAsync(int id);
         Task<IEnumerable<FuncionarioAgendamentoReportDTO>> GetTop5FuncionariosComMaisAgendamentosAsync();
+        Task<IEnumerable<ServicoAgendamentoReportDTO>> GetTop5ServicosMaisAgendadosAsync();
     }
 }

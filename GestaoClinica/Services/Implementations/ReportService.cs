@@ -1,8 +1,8 @@
 ﻿using GestaoClinica.DTO;
 using GestaoClinica.Repository.Interfaces;
-using GestaoClinica.Services.Implementations;
+using GestaoClinica.Services.Interfaces;
 
-namespace GestaoClinica.Services.Interfaces
+namespace GestaoClinica.Services.Implementations
 {
     public class ReportService : IReportService
     {
@@ -16,6 +16,11 @@ namespace GestaoClinica.Services.Interfaces
         public async Task<IEnumerable<FuncionarioAgendamentoReportDTO>> GetTop5FuncionariosComMaisAgendamentosAsync()
         {
             return await _agendamentoRepository.GetTop5FuncionariosComMaisAgendamentosAsync();
+        }
+
+        public async Task<IEnumerable<ServicoAgendamentoReportDTO>> GetTop5ServicosMaisAgendadosAsync()
+        {
+            return await _agendamentoRepository.GetTop5ServicosMaisAgendadosAsync();
         }
     }
 }

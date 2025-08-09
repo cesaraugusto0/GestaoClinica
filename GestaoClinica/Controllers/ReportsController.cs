@@ -1,5 +1,5 @@
 ﻿using GestaoClinica.DTO;
-using GestaoClinica.Services.Implementations;
+using GestaoClinica.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GestaoClinica.Controllers
@@ -19,6 +19,13 @@ namespace GestaoClinica.Controllers
         public async Task<ActionResult<IEnumerable<FuncionarioAgendamentoReportDTO>>> GetTop5FuncionariosComMaisAgendamentos()
         {
             var result = await _reportService.GetTop5FuncionariosComMaisAgendamentosAsync();
+            return Ok(result);
+        }
+
+        [HttpGet("top5-servicos-agendados")]
+        public async Task<ActionResult<IEnumerable<ServicoAgendamentoReportDTO>>> GetTop5ServicosMaisAgendados()
+        {
+            var result = await _reportService.GetTop5ServicosMaisAgendadosAsync();
             return Ok(result);
         }
     }

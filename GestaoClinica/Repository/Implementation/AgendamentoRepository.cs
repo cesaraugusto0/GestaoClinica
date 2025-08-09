@@ -97,5 +97,27 @@ namespace GestaoClinica.Repository.Implementation
                 .Take(5)
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<ServicoAgendamentoReportDTO>> GetTop5ServicosMaisAgendadosAsync()
+        {
+            return await _context.Agendamentos
+                .Include(a => a.Servico)
+                .ThenInclude(s => s.Categoria)
+                .GroupBy(a => new {
+                    a.ServicoId,
+                    a.Servico.NomeServico,
+                    CategoriaNome = a.Servico.Categoria.NomeCategoria
+                })
+                .Select(g => new ServicoAgendamentoReportDTO
+                {
+                    ServicoId = g.Key.ServicoId,
+                    NomeServico = g.Key.NomeServico,
+                    Categoria = g.Key.CategoriaNome,
+                    TotalAgendamentos = g.Count()
+                })
+                .OrderByDescending(s => s.TotalAgendamentos)
+                .Take(5)
+                .ToListAsync();
+        }
     }
 }
