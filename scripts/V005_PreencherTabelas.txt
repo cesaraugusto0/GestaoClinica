@@ -1,0 +1,128 @@
+-- Script para popular o banco dbGestaoClinica - Clínica de Podologia
+-- Limpar dados existentes e resetar IDENTITY
+DELETE FROM dbGestaoClinica.dbo.Servico;
+DELETE FROM dbGestaoClinica.dbo.Funcionario;
+DELETE FROM dbGestaoClinica.dbo.Endereco;
+DELETE FROM dbGestaoClinica.dbo.Categoria;
+DELETE FROM dbGestaoClinica.dbo.Agendamento;
+
+
+-- RESETAR OS CONTADORES IDENTITY
+DBCC CHECKIDENT ('dbGestaoClinica.dbo.Categoria', RESEED, 0);
+DBCC CHECKIDENT ('dbGestaoClinica.dbo.Endereco', RESEED, 0);
+DBCC CHECKIDENT ('dbGestaoClinica.dbo.Funcionario', RESEED, 0);
+DBCC CHECKIDENT ('dbGestaoClinica.dbo.Servico', RESEED, 0);
+DBCC CHECKIDENT ('dbGestaoClinica.dbo.Agendamento', RESEED, 0);
+
+-- Popular tabela Categoria (específico para Podologia)
+INSERT INTO dbGestaoClinica.dbo.Categoria (NomeCategoria, DataCriacao, UltimaAtualizacao) VALUES
+(N'Tratamentos Básicos', GETDATE(), GETDATE()),
+(N'Cirurgias Podológicas', GETDATE(), GETDATE()),
+(N'Tratamentos de Unhas', GETDATE(), GETDATE()),
+(N'Cuidados com Calos', GETDATE(), GETDATE()),
+(N'Pé Diabético', GETDATE(), GETDATE()),
+(N'Tratamentos Estéticos', GETDATE(), GETDATE()),
+(N'Órteses e Palmilhas', GETDATE(), GETDATE()),
+(N'Avaliação Biomecânica', GETDATE(), GETDATE()),
+(N'Fisioterapia Podológica', GETDATE(), GETDATE()),
+(N'Prevenção e Orientação', GETDATE(), GETDATE());
+
+-- Popular tabela Endereco
+INSERT INTO dbGestaoClinica.dbo.Endereco (Logradouro, Numero, Complemento, Cidade, UF, CEP, DataCriacao, UltimaAtualizacao) VALUES
+(N'SGAN 604', N'101', N'Sala 205', N'Brasília', N'DF', N'70840040', GETDATE(), GETDATE()),
+(N'Rua Augusta', N'2690', N'Conjunto 142', N'São Paulo', N'SP', N'01412100', GETDATE(), GETDATE()),
+(N'Avenida Nossa Senhora de Copacabana', N'1234', N'Sala 801', N'Rio de Janeiro', N'RJ', N'22070012', GETDATE(), GETDATE()),
+(N'Rua da Bahia', N'1148', N'Sala 304', N'Belo Horizonte', N'MG', N'30160011', GETDATE(), GETDATE()),
+(N'Avenida Boa Viagem', N'5426', N'Sala 1203', N'Recife', N'PE', N'51021000', GETDATE(), GETDATE()),
+(N'Rua Barão de Studart', N'2481', N'Sala 702', N'Fortaleza', N'CE', N'60120002', GETDATE(), GETDATE()),
+(N'Avenida Cristóvão Colombo', N'545', N'Sala 15', N'Porto Alegre', N'RS', N'90560000', GETDATE(), GETDATE()),
+(N'Rua XV de Novembro', N'123', N'Conjunto 56', N'Curitiba', N'PR', N'80020310', GETDATE(), GETDATE()),
+(N'Avenida Afonso Pena', N'3344', N'Sala 908', N'Campo Grande', N'MS', N'79002074', GETDATE(), GETDATE()),
+(N'Rua T-4', N'456', N'Quadra 125', N'Goiânia', N'GO', N'74230040', GETDATE(), GETDATE()),
+(N'CLN 203', N'Bloco A', N'Loja 15', N'Brasília', N'DF', N'70832510', GETDATE(), GETDATE()),
+(N'SHS Quadra 06', N'Conjunto A', N'Bloco E', N'Brasília', N'DF', N'70316000', GETDATE(), GETDATE()),
+(N'Rua das Palmeiras', N'789', N'Casa', N'Brasília', N'DF', N'71680350', GETDATE(), GETDATE()),
+(N'QS 01 Rua 210', N'25', N'Casa 3', N'Brasília', N'DF', N'71950540', GETDATE(), GETDATE()),
+(N'SHIN QI 03', N'Conjunto 12', N'Casa 5', N'Brasília', N'DF', N'71510120', GETDATE(), GETDATE());
+
+-- Popular tabela Funcionario (especialistas em Podologia)
+INSERT INTO dbGestaoClinica.dbo.Funcionario (Nome, CPF, DataNascimento, Email, Telefone, SenhaHash, Perfil, EnderecoId, Ativo, DataCriacao, UltimaAtualizacao) VALUES
+(N'Dr. Antonio Podólogo', N'12345678901', '1975-03-15', N'antonio.podologo@clinica.com', N'61987654321', N'$2a$10$hashedpassword1', N'podologo', 1, 1, GETDATE(), GETDATE()),
+(N'Dra. Mariana Podóloga', N'23456789012', '1982-07-22', N'mariana.podologa@clinica.com', N'11987654322', N'$2a$10$hashedpassword2', N'podologo', 2, 1, GETDATE(), GETDATE()),
+(N'Dr. Carlos Especialista', N'34567890123', '1978-11-10', N'carlos.especialista@clinica.com', N'21987654323', N'$2a$10$hashedpassword3', N'podologo', 3, 1, GETDATE(), GETDATE()),
+(N'Dra. Fernanda Santos', N'45678901234', '1985-05-07', N'fernanda.santos@clinica.com', N'31987654324', N'$2a$10$hashedpassword4', N'podologo', 4, 1, GETDATE(), GETDATE()),
+(N'Dr. Ricardo Lima', N'56789012345', '1980-09-18', N'ricardo.lima@clinica.com', N'81987654325', N'$2a$10$hashedpassword5', N'podologo', 5, 1, GETDATE(), GETDATE()),
+(N'Dra. Juliana Costa', N'67890123456', '1987-12-25', N'juliana.costa@clinica.com', N'85987654326', N'$2a$10$hashedpassword6', N'podologo', 6, 1, GETDATE(), GETDATE()),
+(N'Dr. Miguel Ferreira', N'78901234567', '1983-04-14', N'miguel.ferreira@clinica.com', N'51987654327', N'$2a$10$hashedpassword7', N'podologo', 7, 1, GETDATE(), GETDATE()),
+(N'Dra. Luciana Oliveira', N'89012345678', '1986-08-30', N'luciana.oliveira@clinica.com', N'41987654328', N'$2a$10$hashedpassword8', N'podologo', 8, 1, GETDATE(), GETDATE()),
+(N'Dr. Paulo Alves', N'90123456789', '1979-01-12', N'paulo.alves@clinica.com', N'67987654329', N'$2a$10$hashedpassword9', N'podologo', 9, 1, GETDATE(), GETDATE()),
+(N'Dra. Camila Martins', N'01234567890', '1984-06-08', N'camila.martins@clinica.com', N'62987654330', N'$2a$10$hashedpassword10', N'podologo', 10, 1, GETDATE(), GETDATE()),
+(N'Ana Administradora', N'11234567890', '1990-02-14', N'admin@clinicapodologia.com', N'61999887766', N'$2a$10$hashedpasswordadmin', N'admin', 11, 1, GETDATE(), GETDATE()),
+(N'Sofia Recepção', N'22345678901', '1992-10-05', N'recepcao@clinicapodologia.com', N'61999887767', N'$2a$10$hashedpasswordrecepcao', N'recepcionista', 12, 1, GETDATE(), GETDATE()),
+(N'Carlos Auxiliar', N'33456789012', '1989-12-20', N'auxiliar@clinicapodologia.com', N'61999887768', N'$2a$10$hashedpasswordauxiliar', N'auxiliar', 13, 1, GETDATE(), GETDATE()),
+(N'Marina Enfermeira', N'44567890123', '1991-08-17', N'enfermeira@clinicapodologia.com', N'61999887769', N'$2a$10$hashedpasswordenfermeira', N'enfermeiro', 14, 1, GETDATE(), GETDATE()),
+(N'Roberto Fisioterapeuta', N'55678901234', '1984-03-11', N'fisio@clinicapodologia.com', N'61999887770', N'$2a$10$hashedpasswordfisio', N'fisioterapeuta', 15, 1, GETDATE(), GETDATE());
+
+-- Popular tabela Servico (serviços específicos de Podologia)
+INSERT INTO dbGestaoClinica.dbo.Servico (NomeServico, Descricao, Preco, DuracaoEstimada, Ativo, DataCriacao, UltimaAtualizacao, CategoriaId) VALUES
+(N'Consulta Podológica Completa', N'Avaliação completa dos pés, diagnóstico e plano de tratamento', 120.00, 45, 1, GETDATE(), GETDATE(), 1),
+(N'Tratamento de Unha Encravada', N'Procedimento para correção de unha encravada', 80.00, 30, 1, GETDATE(), GETDATE(), 3),
+(N'Remoção de Calos e Calosidades', N'Limpeza e remoção de calos e calosidades', 60.00, 30, 1, GETDATE(), GETDATE(), 4),
+(N'Tratamento de Micose', N'Tratamento específico para micoses nos pés', 90.00, 25, 1, GETDATE(), GETDATE(), 3),
+(N'Cuidados com Pé Diabético', N'Tratamento especializado para portadores de diabetes', 150.00, 60, 1, GETDATE(), GETDATE(), 5),
+(N'Cirurgia de Unha', N'Procedimento cirúrgico para correção de problemas ungueais', 300.00, 90, 1, GETDATE(), GETDATE(), 2),
+(N'Confecção de Palmilha Ortopédica', N'Palmilha personalizada para correção postural', 200.00, 60, 1, GETDATE(), GETDATE(), 7),
+(N'Avaliação Biomecânica da Marcha', N'Análise detalhada da pisada e marcha', 180.00, 75, 1, GETDATE(), GETDATE(), 8),
+(N'Limpeza de Pele dos Pés', N'Procedimento estético para limpeza e hidratação', 50.00, 45, 1, GETDATE(), GETDATE(), 6),
+(N'Tratamento de Verrugas Plantares', N'Remoção e tratamento de verrugas nos pés', 100.00, 30, 1, GETDATE(), GETDATE(), 1),
+(N'Fisioterapia para Pés', N'Sessão de fisioterapia específica para problemas podológicos', 80.00, 50, 1, GETDATE(), GETDATE(), 9),
+(N'Orientação em Cuidados Preventivos', N'Consulta educativa sobre cuidados com os pés', 70.00, 30, 1, GETDATE(), GETDATE(), 10),
+(N'Aplicação de Órteses Digitais', N'Colocação de dispositivos para correção digital', 120.00, 40, 1, GETDATE(), GETDATE(), 7),
+(N'Desbridamento de Feridas', N'Limpeza cirúrgica de feridas nos pés', 150.00, 45, 1, GETDATE(), GETDATE(), 1),
+(N'Tratamento de Hiperhidrose Plantar', N'Procedimento para redução da transpiração excessiva', 180.00, 30, 1, GETDATE(), GETDATE(), 1),
+(N'Podologia Esportiva', N'Tratamento especializado para atletas e esportistas', 200.00, 60, 1, GETDATE(), GETDATE(), 8),
+(N'Cirurgia de Hálux Valgo', N'Correção cirúrgica do joanete', 1200.00, 120, 1, GETDATE(), GETDATE(), 2),
+(N'Aplicação de Laser Terapêutico', N'Tratamento a laser para diversos problemas podológicos', 100.00, 20, 1, GETDATE(), GETDATE(), 1),
+(N'Drenagem Linfática nos Pés', N'Massagem terapêutica para melhora da circulação', 80.00, 40, 1, GETDATE(), GETDATE(), 6),
+(N'Avaliação Pré-Cirúrgica', N'Consulta preparatória para procedimentos cirúrgicos', 100.00, 30, 1, GETDATE(), GETDATE(), 2),
+(N'Retorno Pós-Operatório', N'Consulta de acompanhamento após cirurgias', 80.00, 20, 1, GETDATE(), GETDATE(), 2),
+(N'Reeducação da Marcha', N'Treinamento para correção de padrões de caminhada', 120.00, 45, 1, GETDATE(), GETDATE(), 9),
+(N'Tratamento de Rachadura no Calcanhar', N'Cuidado específico para fissuras e ressecamento', 70.00, 30, 1, GETDATE(), GETDATE(), 4),
+(N'Podologia Geriátrica', N'Cuidados especializados para idosos', 130.00, 50, 1, GETDATE(), GETDATE(), 1),
+(N'Podologia Pediátrica', N'Tratamento podológico para crianças', 100.00, 30, 1, GETDATE(), GETDATE(), 1);
+
+
+INSERT INTO Agendamento(
+DataHoraInicio,
+DuracaoAtendimento,
+Observacoes,
+ClienteId,
+ServicoId,
+FuncionarioId,
+StatusAgenda
+)
+VALUES
+( '2025-08-09 09:00:00', 60, 'Primeira consulta', 1, 1, 1, 'Agendado'),
+( '2025-08-09 10:15:00', 45, 'Preferência sala 2', 2, 2, 2, 'Confirmado'),
+( '2025-08-09 11:15:00', 30, NULL, 3, 3, 1, 'Agendado'),
+('2025-08-09 13:00:00', 60, 'Cliente retorna após 6m', 4, 2, 1, 'Confirmado'),
+( '2025-08-09 14:30:00', 45, 'Alérgico a látex', 5, 2, 2, 'Agendado'),
+('2025-08-09 15:30:00', 30, 'Solicitou orçamento', 6, 4, 4, 'Agendado'),
+('2025-08-10 09:00:00', 60, 'Confirmar convênio',  7, 1, 1, 'Confirmado'),
+('2025-08-10 10:15:00', 45, NULL, 8, 2, 2, 'Agendado'),
+('2025-08-10 11:15:00', 30, 'Paciente preferiu manhã', 9, 3, 3, 'Agendado'),
+('2025-08-10 13:00:00', 60, 'Remarcado do dia 07', 10, 1, 4, 'Confirmado');
+
+-- Verificação separada 
+
+SELECT * FROM dbGestaoClinica.dbo.Funcionario f;
+
+SELECT * FROM dbGestaoClinica.dbo.Agendamento a;
+
+SELECT * FROM dbGestaoClinica.dbo.Endereco e;
+
+SELECT * FROM dbGestaoClinica.dbo.Servico;
+
+SELECT * FROM dbGestaoClinica.dbo.Categoria c;
+
+PRINT 'Dados inseridos com sucesso!';
