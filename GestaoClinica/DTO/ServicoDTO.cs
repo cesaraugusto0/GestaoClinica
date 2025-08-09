@@ -14,6 +14,12 @@ public class ServicoDTO
     public CategoriaDTO? Categoria { get; set; }
 }
 
+public class ServicoResumoDTO
+{
+    public int IdServico { get; set; }
+    public string NomeServico { get; set; }
+}
+
 public class ServicoCreateDTO
 {
     public string NomeServico { get; set; }

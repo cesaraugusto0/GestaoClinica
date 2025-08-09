@@ -13,6 +13,12 @@ public class FuncionarioDTO : PessoaDTO
     // SenhaHash não está incluída por segurança
 }
 
+public class FuncionarioResumoDTO
+{
+    public int IdFuncionario { get; set; }
+    public string? Nome { get; set; }
+}
+
 // DTO para criação de Funcionario
 public class FuncionarioCreateDTO : PessoaDTO
 {

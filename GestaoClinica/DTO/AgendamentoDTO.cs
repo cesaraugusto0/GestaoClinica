@@ -4,16 +4,13 @@ public class AgendamentoDTO
 {
     public int IdAgendamento { get; set; }
     public DateTime DataHoraInicio { get; set; }
-    public string HoraInicio { get; set; }
-    public string HoraFinm { get; set; }
+    public string HoraInicio => DataHoraInicio.ToString("HH:mm");
+    public string HoraFim => DataHoraInicio.AddMinutes(DuracaoAtendimento).ToString("HH:mm");
     public int DuracaoAtendimento { get; set; }
     public string? Observacoes { get; set; }
-    public int ClienteId { get; set; }
-    public int ServicoId { get; set; }
-    public int FuncionarioId { get; set; }
-    public ClienteDTO? Cliente { get; set; }
-    public ServicoDTO? Servico { get; set; }
-    public FuncionarioDTO? Funcionario { get; set; }
+    public ClienteResumoDTO? Cliente { get; set; }
+    public ServicoResumoDTO? Servico { get; set; }
+    public FuncionarioResumoDTO? Funcionario { get; set; }
     public string StatusAgenda { get; set; } // Usando string para simplificar a serialização
 }
 

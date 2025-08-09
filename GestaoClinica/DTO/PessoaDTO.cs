@@ -8,3 +8,8 @@ public class PessoaDTO
     public string Cpf { get; set; }
     public DateTime DataNascimento { get; set; }
 }
+
+public class PessoaResumoDTO
+{
+    public string Nome { get; set; }
+}

@@ -8,3 +8,8 @@ public class ClienteDTO : PessoaDTO
     public int? EnderecoId { get; set; }
     public EnderecoDTO? Endereco { get; set; }
 }
+
+public class ClienteResumoDTO : PessoaResumoDTO
+{
+    public int IdCliente { get; set; }
+}
